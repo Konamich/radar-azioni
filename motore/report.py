@@ -1,6 +1,7 @@
 """Genera il report HTML (unico file, funziona su telefono e PC, anche offline)."""
 import json
 import math
+import shutil
 
 import numpy as np
 import pandas as pd
@@ -63,4 +64,8 @@ def crea(oggi, tab, risultati, statistiche, riepilogo, storia, regime, demo=Fals
     html = TEMPLATE.read_text(encoding="utf-8").replace("__DATI__", js)
     out = config.OUTPUT / "index.html"
     out.write_text(html, encoding="utf-8")
+    for icona in ("icona.svg", "apple-touch-icon.png"):
+        sorgente = config.ROOT / "motore" / icona
+        if sorgente.exists():
+            shutil.copy(sorgente, config.OUTPUT / icona)
     return out
