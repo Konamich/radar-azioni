@@ -64,9 +64,17 @@ Il voto finale è una media pesata dei due. Filtri: liquidità minima ~750.000 �
 - I dati vengono da Yahoo Finance (gratuiti, con possibili errori o blocchi temporanei). Prima di comprare **controlla sempre il prezzo e il titolo su DEGIRO**: il programma non può verificare che ogni singolo ticker sia acquistabile dal tuo conto.
 - Il programma non è collegato al tuo conto e non esegue ordini.
 
-## 6. Personalizzare
+## 6. Piano di accumulo e costi DEGIRO
 
-- `motore/config.py`: capitalizzazione minima USA, liquidità minima, numero di segnali, stop e obiettivi in multipli di ATR, orizzonti.
+La scheda **Piano** divide il versamento mensile (predefinito 100 €) tra:
+- **ETF globale** (predefinito 80%) dalla Core Selection su Tradegate: 1 € a ordine, comprando quote intere ogni 1-2 mesi;
+- **azioni dal Radar** (20%): si accumula e ogni 6 mesi si compra una sola azione tra i candidati della lista medio-lungo, preferendo USA e Milano (2 € a ordine).
+
+Tutti i calcoli includono commissioni DEGIRO, cambio automatico 0,25%, Tobin tax italiana 0,2% e TTF francese 0,4%, IVAFE 0,2% annua e 26% sul guadagno. Ogni segnale mostra anche quanto pesano i costi andata+ritorno. Lo scalping con questi importi non è sostenibile: la scheda mostra il perché con i numeri.
+
+## 7. Personalizzare
+
+- `motore/config.py`: capitalizzazione minima USA, liquidità minima, numero di segnali, stop e obiettivi in multipli di ATR, orizzonti, tariffe DEGIRO e tasse.
 - `tickers_extra.txt`: titoli in più da analizzare (formato Yahoo, es. `LDO.MI`).
 
 ## Struttura
@@ -78,6 +86,7 @@ motore/dati.py             download prezzi con cache
 motore/indicatori.py       indicatori tecnici
 motore/modello.py          modello ML + regole + pesi adattivi
 motore/segnali.py          liste acquisti/vendite, stop, obiettivi
+motore/costi.py            commissioni DEGIRO, cambio e tasse sulle transazioni
 motore/tracciamento.py     registro previsioni e verifica
 motore/report.py           pagina HTML
 stato/                     memoria del programma (salvata su GitHub)

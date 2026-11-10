@@ -27,6 +27,8 @@ def _righe_lista(df, o, storia):
             "stop": _num(r.get("stop")), "tgt": _num(r.get("target")),
             "r21": _num(r["r21"]), "r252": _num(r["r252"]), "rsi": _num(r["rsi14"], 0),
             "mot": r.get("motivi", ""), "sp": storia.get(r["ticker"], []),
+            "pe": _num(r.get("prezzo_eur"), 2), "imp": _num(r.get("importo_rif"), 2),
+            "cp": _num(r.get("costo_pct")),
         })
     return out
 
@@ -50,6 +52,11 @@ def crea(oggi, tab, risultati, statistiche, riepilogo, storia, regime, demo=Fals
         "tutti": tutti,
         "param": {"swing_stop": config.SWING_STOP_ATR, "swing_tgt": config.SWING_TARGET_ATR,
                   "lungo_stop": config.LUNGO_STOP_ATR},
+        "costi": {"comm": config.DEGIRO_COMMISSIONE, "comm_altre": config.DEGIRO_COMMISSIONE_ALTRE,
+                  "gestione": config.DEGIRO_GESTIONE, "etf_core": config.DEGIRO_ETF_CORE,
+                  "autofx": config.DEGIRO_AUTOFX, "conn": config.DEGIRO_CONNETTIVITA,
+                  "ftt": config.TASSA_TRANSAZIONI, "ivafe": config.IVAFE,
+                  "tassa": config.TASSA_PLUSVALENZE, "fx": config.FX_EUR},
     }
     js = json.dumps(dati, ensure_ascii=False, default=lambda x: None if x is None else float(x))
     js = js.replace("</", "<\\/")

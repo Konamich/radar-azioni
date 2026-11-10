@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from . import config
+from . import config, costi
 
 
 def motivazioni(r, orizzonte):
@@ -57,7 +57,26 @@ def genera(tab, orizzonte):
     acq["stop"] = acq["close"] - stop_k * acq["atr"]
     acq["target"] = acq["close"] + tgt_k * acq["atr"] if tgt_k else np.nan
     acq["motivi"] = [motivazioni(r, orizzonte) for _, r in acq.iterrows()]
+    _aggiungi_costi(acq)
 
     ven = t.sort_values("punteggio").head(config.N_VENDITE).copy()
     ven["motivi"] = [motivazioni(r, orizzonte) for _, r in ven.iterrows()]
+    _aggiungi_costi(ven)
     return acq, ven
+
+
+def _aggiungi_costi(df):
+    """Prezzo di 1 azione in euro (DEGIRO non vende frazioni) e peso dei costi andata+ritorno."""
+    if not len(df):
+        return
+    pe, imp, cp = [], [], []
+    for _, r in df.iterrows():
+        p = costi.prezzo_eur(r["close"], r.get("valuta", "EUR"))
+        n = max(1, int(config.IMPORTO_RIFERIMENTO // p)) if p > 0 else 1
+        importo = n * p
+        pe.append(p)
+        imp.append(importo)
+        cp.append(costi.andata_ritorno(r["borsa"], r.get("valuta", "EUR"), importo) / importo)
+    df["prezzo_eur"] = pe
+    df["importo_rif"] = imp
+    df["costo_pct"] = cp

@@ -52,7 +52,7 @@ main{max-width:980px;margin:0 auto;padding:0 12px}
 .up{color:var(--buy)}.dn{color:var(--sell)}
 nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);
   border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
-nav button{flex:1;max-width:140px;border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button{flex:1;max-width:120px;border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:2px}
 nav button svg{width:22px;height:22px}
 nav button.on{color:var(--acc)}
 input,select{font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
@@ -141,10 +141,29 @@ th{color:var(--muted);font-weight:600;font-size:12px;cursor:pointer;position:sti
   </div>
   <div id="aff"></div>
 </section>
+
+<!-- PIANO -->
+<section class="sez" id="s-piano">
+  <div class="card">
+    <h2>Piano di accumulo su DEGIRO</h2>
+    <p class="note">Imposta quanto versi ogni mese: il piano divide tra ETF (base, diversificata) e azioni scelte dal Radar (parte attiva), tenendo conto di commissioni, cambio, Tobin tax, IVAFE e tasse.</p>
+    <div class="row">
+      <label class="small" style="flex:1">Versamento mensile (€)<input id="pi-m" type="number" inputmode="decimal" value="100"></label>
+      <label class="small" style="flex:1">Quota ETF (%)<input id="pi-core" type="number" inputmode="decimal" value="80"></label>
+      <label class="small" style="flex:1">Prezzo 1 quota ETF (€)<input id="pi-etf" type="number" inputmode="decimal" placeholder="es. 120"></label>
+    </div>
+  </div>
+  <div class="card"><h2>Cosa fare</h2><div id="pi-azioni"></div></div>
+  <div class="card"><h2>Candidati per la parte azioni</h2><div id="pi-cand"></div></div>
+  <div class="card"><h2>Quanto potrebbe diventare</h2><div id="pi-proj"></div></div>
+  <div class="card"><h2>Costi DEGIRO usati nei calcoli</h2><div id="pi-costi"></div></div>
+  <div class="card warnbox"><h2>Scalping e trading veloce</h2><div id="pi-scalp"></div></div>
+</section>
 </main>
 
 <nav id="nav">
   <button data-s="oggi" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>Oggi</button>
+  <button data-s="piano"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1.2 1.1-2 2.5-2s2.5.8 2.5 2-1.1 1.7-2.5 2-2.5.8-2.5 2 1.1 2 2.5 2 2.5-.8 2.5-2"/></svg>Piano</button>
   <button data-s="segnali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg>Segnali</button>
   <button data-s="port"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>Portafoglio</button>
   <button data-s="cerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Cerca</button>
@@ -158,6 +177,7 @@ const fmt = (x, d=2) => (x==null || !isFinite(x)) ? '–' : Number(x).toLocaleSt
 const pct = (x, d=1) => (x==null || !isFinite(x)) ? '–' : (x>0?'+':'') + fmt(x*100, d) + '%';
 const cls = x => x>0 ? 'up' : (x<0 ? 'dn' : '');
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pctc = (x, d=1) => pct(x, d).replace('+','');
 const valuta = v => v==='GBp' ? 'GBp' : (v||'');
 
 // indice di tutti i titoli
@@ -189,6 +209,11 @@ function itemHTML(r, tipo, o){
   if (tipo==='acquisti' && r.stop) lv += `<span>Stop <b>${fmt(r.stop)}</b> (${pct(r.stop/r.c-1)})</span>`;
   if (tipo==='acquisti' && r.tgt) lv += `<span>Obiettivo <b>${fmt(r.tgt)}</b> (${pct(r.tgt/r.c-1)})</span>`;
   lv += `<span>1 mese <b class="${cls(r.r21)}">${pct(r.r21)}</b></span><span>12 mesi <b class="${cls(r.r252)}">${pct(r.r252)}</b></span><span>RSI <b>${fmt(r.rsi,0)}</b></span>`;
+  if (r.cp != null) {
+    let c = `<span>Costi DEGIRO <b>${pctc(r.cp,1)}</b> andata+ritorno su ${fmt(r.imp,0)} € (1 azione ≈ ${fmt(r.pe,0)} €)</span>`;
+    if (tipo==='acquisti' && r.tgt) c += `<span>Obiettivo al netto dei costi <b class="${cls(r.tgt/r.c-1-r.cp)}">${pct(r.tgt/r.c-1-r.cp)}</b></span>`;
+    lv += c;
+  }
   return `<div class="item">
     <div><div><span class="tk">${esc(r.t)}</span> ${b}</div><div class="nm">${esc(r.n)} · ${esc(r.b)}</div></div>
     <div class="right">${spark(r.sp)}<div class="small">punteggio <span class="pct">${fmt(r.p,0)}</span>/100</div></div>
@@ -368,6 +393,81 @@ function bindTip(el, serie){
   $('#aff').innerHTML = h;
   ['swing','lungo'].forEach(o => { const el = document.getElementById('ch-'+o); if (el) bindTip(el, D.track[o].serie); });
 })();
+
+// PIANO
+const PK='radar-azioni-piano';
+try { const sv = JSON.parse(localStorage.getItem(PK)||'{}'); ['m','core','etf'].forEach(k => { if (sv[k]!=null) $('#pi-'+k).value = sv[k]; }); } catch(e) {}
+const C = D.costi;
+const commBorsa = b => (C.comm[b] ?? C.comm_altre) + C.gestione;
+const costoAR = (b, v, imp) => 2*commBorsa(b) + (v && v!=='EUR' ? 2*imp*C.autofx : 0) + imp*(C.ftt[b]||0);
+function simula(anni, r, mensile, quotaCore, ogniCore, ogniSat){
+  let v=0, cassaC=0, cassaS=0, vers=0, costi=0, ivafe=0;
+  const rm = Math.pow(1 + r - 0.002, 1/12) - 1;  // TER medio ETF 0,2%
+  for (let m=1; m<=anni*12; m++){
+    cassaC += mensile*quotaCore; cassaS += mensile*(1-quotaCore); vers += mensile;
+    if (m % ogniCore === 0 && cassaC > 0){ const c = C.etf_core; costi += c; v += cassaC - c; cassaC = 0; }
+    if (quotaCore < 1 && m % ogniSat === 0 && cassaS > 0){ const c = commBorsa('USA') + cassaS*C.autofx; costi += c; v += cassaS - c; cassaS = 0; }
+    v *= 1 + rm;
+    if (m % 12 === 0){ const t = v*C.ivafe; v -= t; ivafe += t; }
+  }
+  v += cassaC + cassaS;
+  const tasse = Math.max(0, v - vers) * C.tassa;
+  return {vers, lordo:v, netto:v - tasse, costi, ivafe, tasse};
+}
+function renderPiano(){
+  const m = Math.max(10, +$('#pi-m').value || 100), core = Math.min(100, Math.max(0, +$('#pi-core').value || 80))/100;
+  const etf = +$('#pi-etf').value || 0;
+  try { localStorage.setItem(PK, JSON.stringify({m, core: core*100, etf: etf||null})); } catch(e) {}
+  const mc = m*core, ms = m*(1-core);
+  // frequenza ETF: almeno 1 quota intera per ordine
+  let ogniCore = etf > 0 ? Math.max(1, Math.ceil(etf / Math.max(mc,1))) : (mc >= 150 ? 1 : 2);
+  const ordineCore = mc*ogniCore;
+  const ogniSat = ms > 0 ? Math.min(12, Math.max(3, Math.ceil(120 / ms))) : 0;
+  const budgetSat = ms*ogniSat;
+  const mese = new Date().getMonth()+1;
+  let a = `<div class="item"><div><span class="tk">ETF globale</span> <span class="badge b-buy">▲ ${fmt(mc,0)} €/mese</span></div><div></div>
+    <div class="why">Compra un ETF azionario mondiale ad accumulazione dalla <b>Core Selection su Tradegate</b> (1 € a ordine). Con ${fmt(mc,0)} €/mese conviene comprare <b>ogni ${ogniCore} ${ogniCore===1?'mese':'mesi'}</b> (~${fmt(ordineCore,0)} € a ordine): il costo pesa <b>${pctc(C.etf_core/ordineCore,2)}</b>. ${etf>0 ? `Con la quota a ${fmt(etf,0)} € ne compri ${Math.floor(ordineCore/etf)} per volta; il resto rimane in cassa per il giro dopo.` : 'Inserisci sopra il prezzo di una quota per sapere ogni quanto comprare (DEGIRO non vende frazioni).'}
+    <br>Esempi: Vanguard FTSE All-World Acc (IE00BK5BQT80) · iShares Core MSCI World Acc (IE00B4L5Y983). Controlla su DEGIRO di scegliere la quotazione su <b>Tradegate</b>.</div></div>`;
+  if (ms > 0) a += `<div class="item"><div><span class="tk">Azioni dal Radar</span> <span class="badge b-hold">● ${fmt(ms,0)} €/mese</span></div><div></div>
+    <div class="why">Accumula ${fmt(ms,0)} €/mese e <b>ogni ${ogniSat} mesi</b> (~${fmt(budgetSat,0)} €) compra <b>una sola azione</b> tra i candidati qui sotto, da tenere almeno 6-12 mesi. Sotto i 120 € a ordine le commissioni mangiano troppo. Questo mese: ${(mese % ogniSat === 0) ? '<b>è mese di acquisto</b>.' : `accumula (prossimo acquisto tra ${ogniSat - (mese % ogniSat)} ${ogniSat - (mese % ogniSat)===1?'mese':'mesi'}).`}</div></div>`;
+  $('#pi-azioni').innerHTML = a;
+  // candidati: lista lungo periodo, borse economiche, 1 azione entro il budget
+  const L = D.liste.lungo.acquisti.filter(r => r.pe != null && r.pe <= Math.max(budgetSat, 1) && (r.b==='USA' || r.b==='Milano'));
+  const L2 = D.liste.lungo.acquisti.filter(r => r.pe != null && r.pe <= Math.max(budgetSat,1) && !(r.b==='USA' || r.b==='Milano'));
+  const riga = r => { const n = Math.max(1, Math.floor(budgetSat / r.pe)), imp = n*r.pe, c = costoAR(r.b, r.v, imp);
+    return `<tr><td><b>${esc(r.t)}</b><br><span class="small">${esc(r.n)} · ${esc(r.b)}</span></td><td>${n} × ${fmt(r.pe,0)} €</td><td>${fmt(c,2)} €<br><span class="small">${pctc(c/imp,1)}</span></td><td><span class="pct">${fmt(r.p,0)}</span></td></tr>`; };
+  $('#pi-cand').innerHTML = ms <= 0 ? '<p class="note">Hai messo il 100% in ETF: nessuna azione singola.</p>' :
+    `<p class="note">Dalla lista "medio-lungo" di oggi, solo titoli dove 1 azione costa al massimo ${fmt(budgetSat,0)} €. Prima le borse più economiche su DEGIRO (USA e Milano: 2 € a ordine).</p>
+    <table><thead><tr><th>Titolo</th><th>Quante</th><th>Costi A/R</th><th>Punt.</th></tr></thead><tbody>${(L.concat(L2)).slice(0,8).map(riga).join('') || '<tr><td colspan="4">Nessun candidato nel budget oggi: accumula e riprova il mese prossimo.</td></tr>'}</tbody></table>`;
+  // proiezioni
+  const sc = [[0.03,'Prudente 3%'],[0.06,'Medio 6%'],[0.08,'Buono 8%']];
+  let t = `<table><thead><tr><th>Anni</th><th>Versati</th>${sc.map(s=>`<th>${s[1]}</th>`).join('')}</tr></thead><tbody>`;
+  [5,10,20,30].forEach(y => {
+    const rs = sc.map(s => simula(y, s[0], m, core, ogniCore, ogniSat||6));
+    t += `<tr><td>${y}</td><td>${fmt(rs[0].vers,0)} €</td>${rs.map(r=>`<td><b>${fmt(r.netto,0)} €</b><br><span class="small up">+${fmt(r.netto-r.vers,0)}</span></td>`).join('')}</tr>`;
+  });
+  const d20 = simula(20, 0.06, m, core, ogniCore, ogniSat||6);
+  t += `</tbody></table><p class="note">Valori <b>netti</b>: già tolti commissioni DEGIRO, costo dell'ETF (0,2%/anno), IVAFE 0,2%/anno e il 26% di tasse sul guadagno se vendi tutto alla fine. Esempio 20 anni al 6%: commissioni ${fmt(d20.costi,0)} €, IVAFE ${fmt(d20.ivafe,0)} €, tasse ${fmt(d20.tasse,0)} €. I rendimenti sono ipotesi annue medie del mercato azionario mondiale, non promesse: in alcuni anni si perde anche il 20-40%. Euro nominali, senza inflazione.</p>`;
+  $('#pi-proj').innerHTML = t;
+  // costi
+  $('#pi-costi').innerHTML = `<table><tbody>
+    <tr><td>ETF Core Selection su Tradegate</td><td>${fmt(C.etf_core,2)} € a ordine</td></tr>
+    <tr><td>Azioni USA e Borsa Italiana</td><td>${fmt(commBorsa('USA'),2)} € a ordine</td></tr>
+    <tr><td>Azioni Xetra, Parigi, Amsterdam, Londra, Zurigo, nordici…</td><td>${fmt(commBorsa('Xetra'),2)} € a ordine</td></tr>
+    <tr><td>Cambio automatico (titoli non in euro)</td><td>${pctc(C.autofx,2)} a operazione</td></tr>
+    <tr><td>Connessione borse estere (non Milano/Tradegate)</td><td>${fmt(C.conn,2)} €/anno per borsa</td></tr>
+    <tr><td>Tobin tax azioni italiane / TTF francese</td><td>${pctc(C.ftt.Milano||0,1)} / ${pctc(C.ftt.Parigi||0,1)} sull'acquisto</td></tr>
+    <tr><td>IVAFE (DEGIRO è estero: la versi tu)</td><td>${pctc(C.ivafe,1)} annuo sul valore</td></tr>
+    <tr><td>Tasse sul guadagno</td><td>${pctc(C.tassa,0)}</td></tr></tbody></table>
+    <p class="note">DEGIRO non fa da sostituto d'imposta: ogni anno vanno compilati i quadri RW (e RT/RM se vendi o incassi dividendi). Le perdite su azioni si possono compensare con guadagni su azioni nei 4 anni successivi; i guadagni degli ETF invece no. Tariffe da ricontrollare sul tariffario DEGIRO.</p>`;
+  // scalping
+  const imp = [100, m*12, 1000, 5000];
+  $('#pi-scalp').innerHTML = `<p class="note">Lo scalping (tanti acquisti e vendite nella stessa giornata per guadagnare pochi decimi di %) <b>con questi importi non è sostenibile</b>: ogni giro di compra+vendi costa più di quanto si punta a guadagnare. E ogni guadagno va dichiarato e tassato al 26%.</p>
+    <table><thead><tr><th>Importo</th><th>Costo A/R USA</th><th>Costo A/R Xetra</th></tr></thead><tbody>${imp.map(x=>{const u=costoAR('USA','USD',x), e=costoAR('Xetra','EUR',x);return `<tr><td>${fmt(x,0)} €</td><td>${fmt(u,2)} € (${pctc(u/x,2)})</td><td>${fmt(e,2)} € (${pctc(e/x,2)})</td></tr>`;}).join('')}</tbody></table>
+    <p class="note">Lo swing della scheda Segnali è il modo "attivo" più sensato, ma solo con almeno 1.000-2.000 € per operazione e dopo che la scheda Affidabilità avrà mostrato risultati positivi.</p>`;
+}
+['#pi-m','#pi-core','#pi-etf'].forEach(id => $(id).oninput = renderPiano);
+renderPiano();
 </script>
 </body>
 </html>

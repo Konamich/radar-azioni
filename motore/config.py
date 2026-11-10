@@ -44,3 +44,16 @@ FX_EUR = {"USD": 0.92, "EUR": 1.0, "GBP": 1.17, "GBp": 0.0117, "CHF": 1.05,
 
 for d in (STATO, CACHE, OUTPUT, SCORES_DIR):
     d.mkdir(parents=True, exist_ok=True)
+
+# ---- Costi DEGIRO (tariffario Italia, verificati a novembre 2026) ----------
+# commissione per ordine in EUR, esclusa la commissione di gestione
+DEGIRO_COMMISSIONE = {"USA": 1.00, "Milano": 1.00}
+DEGIRO_COMMISSIONE_ALTRE = 3.90       # Xetra, Parigi, Amsterdam, Londra, Zurigo, nordici, ecc.
+DEGIRO_GESTIONE = 1.00                # "handling fee" su ogni ordine
+DEGIRO_ETF_CORE = 1.00                # ETF Core Selection su Tradegate (solo gestione)
+DEGIRO_AUTOFX = 0.0025                # cambio automatico per titoli non in euro (a ogni operazione)
+DEGIRO_CONNETTIVITA = 2.50            # all'anno per ogni borsa estera usata (non Milano / Tradegate)
+TASSA_TRANSAZIONI = {"Milano": 0.002, "Parigi": 0.004}   # Tobin tax IT e TTF FR, solo sull'acquisto
+IVAFE = 0.002                         # 0,2% annuo sul valore (DEGIRO = regime dichiarativo)
+TASSA_PLUSVALENZE = 0.26
+IMPORTO_RIFERIMENTO = 150             # importo d'ordine usato per mostrare il peso dei costi
