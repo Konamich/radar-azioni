@@ -1,0 +1,3 @@
+# Aggiungi qui titoli che vuoi analizzare anche se non sono negli indici (formato Yahoo Finance)
+# Esempi: Milano .MI | Xetra .DE | Parigi .PA | Amsterdam .AS | Londra .L | USA senza suffisso
+# LDO.MI

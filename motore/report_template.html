@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e1014">
+<title>Radar Azioni</title>
+<style>
+:root{
+  --bg:#0e1014;--card:#161a21;--card2:#1c212a;--line:#262c36;--ink:#e9ecf1;--ink2:#aab2bf;--muted:#7a8494;
+  --acc:#5b9cff;--buy:#2fbf8f;--sell:#ef6b5b;--warn:#e7b443;--pos:#5b9cff;--neg:#f0904a;
+  --r:14px;
+}
+@media (prefers-color-scheme: light){
+  :root{--bg:#f4f5f8;--card:#fff;--card2:#f7f8fa;--line:#e3e6eb;--ink:#14171c;--ink2:#4a5260;--muted:#7a8290;
+  --acc:#2c6fe0;--buy:#118a62;--sell:#c8402f;--warn:#a87400;--pos:#2c6fe0;--neg:#c96a1c;}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+header{padding:calc(14px + env(safe-area-inset-top)) 16px 8px;max-width:980px;margin:0 auto}
+h1{font-size:22px;margin:0;letter-spacing:-.3px}
+.sub{color:var(--muted);font-size:13px}
+main{max-width:980px;margin:0 auto;padding:0 12px}
+.sez{display:none}.sez.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:10px 0}
+.card h2{font-size:16px;margin:0 0 8px}
+.card h3{font-size:14px;margin:12px 0 6px;color:var(--ink2);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.kpi{background:var(--card2);border-radius:10px;padding:10px}
+.kpi .v{font-size:20px;font-weight:650;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:12px;color:var(--muted)}
+.seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;gap:3px;margin:10px 0}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink2);padding:8px;border-radius:8px;font:inherit;font-size:14px}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:12px 0;border-top:1px solid var(--line)}
+.item:first-of-type{border-top:0}
+.tk{font-weight:650}.nm{color:var(--ink2);font-size:13px}
+.right{text-align:right;font-variant-numeric:tabular-nums}
+.small{font-size:12px;color:var(--muted)}
+.why{grid-column:1/-1;font-size:12.5px;color:var(--ink2)}
+.lv{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;font-variant-numeric:tabular-nums}
+.lv span b{font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:650;padding:2px 8px;border-radius:99px}
+.b-buy{color:var(--buy);background:color-mix(in srgb,var(--buy) 14%,transparent)}
+.b-sell{color:var(--sell);background:color-mix(in srgb,var(--sell) 14%,transparent)}
+.b-warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent)}
+.b-hold{color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.pct{display:inline-block;min-width:44px;text-align:center;font-weight:650;border-radius:8px;padding:2px 6px;background:var(--card2)}
+.up{color:var(--buy)}.dn{color:var(--sell)}
+nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav button{flex:1;max-width:140px;border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--acc)}
+input,select{font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:110px}
+.btn{border:0;background:var(--acc);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:10px 14px;cursor:pointer}
+.btn.sec{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 6px;border-top:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px;cursor:pointer;position:sticky;top:0;background:var(--card)}
+.note{font-size:12.5px;color:var(--muted)}
+.warnbox{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+.chart{position:relative}
+.tip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;display:none;white-space:nowrap;z-index:3}
+.del{background:none;border:0;color:var(--muted);font-size:18px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <h1>Radar Azioni</h1>
+  <div class="sub" id="sub"></div>
+</header>
+<main>
+
+<!-- OGGI -->
+<section class="sez on" id="s-oggi">
+  <div class="card warnbox" id="demo" style="display:none"><b>Dati simulati.</b> Questo report è una prova: i titoli non esistono.</div>
+  <div class="card">
+    <h2>Il mercato oggi</h2>
+    <div class="grid" id="regime"></div>
+    <p class="note" id="regime-txt"></p>
+  </div>
+  <div class="card"><h2>Migliori swing (1-4 settimane)</h2><div id="top-swing"></div></div>
+  <div class="card"><h2>Migliori medio-lungo (6 mesi)</h2><div id="top-lungo"></div></div>
+  <p class="note" style="padding:0 4px">Segnali statistici generati automaticamente, non consulenza finanziaria. Verifica sempre il titolo su DEGIRO e decidi tu quanto rischiare.</p>
+</section>
+
+<!-- SEGNALI -->
+<section class="sez" id="s-segnali">
+  <div class="seg" id="seg-or"><button data-o="swing" class="on">Swing</button><button data-o="lungo">Medio-lungo</button></div>
+  <div class="seg" id="seg-tipo"><button data-k="acquisti" class="on">Da comprare</button><button data-k="vendite">Da vendere / evitare</button></div>
+  <div class="card"><div id="lista"></div></div>
+</section>
+
+<!-- PORTAFOGLIO -->
+<section class="sez" id="s-port">
+  <div class="card">
+    <h2>Il mio portafoglio</h2>
+    <p class="note">I tuoi titoli restano solo su questo dispositivo. Per ogni posizione il programma ti dice se tenere, alleggerire o vendere.</p>
+    <datalist id="dl"></datalist>
+    <div class="row">
+      <input id="p-t" list="dl" placeholder="Titolo (es. ENI.MI o Apple)" autocomplete="off">
+      <input id="p-q" type="number" inputmode="decimal" placeholder="Quantità">
+      <input id="p-pr" type="number" inputmode="decimal" placeholder="Prezzo di carico">
+      <select id="p-o"><option value="swing">Swing</option><option value="lungo">Medio-lungo</option></select>
+    </div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="p-add">Aggiungi</button></div>
+  </div>
+  <div class="card"><div id="port"></div></div>
+  <div class="card">
+    <h3 style="margin-top:0">Copia il portafoglio su un altro dispositivo</h3>
+    <div class="row"><button class="btn sec" id="p-exp">Copia codice</button><button class="btn sec" id="p-imp">Incolla codice</button></div>
+    <p class="note" id="p-msg"></p>
+  </div>
+</section>
+
+<!-- CERCA -->
+<section class="sez" id="s-cerca">
+  <div class="card">
+    <input id="q" placeholder="Cerca tra tutti i titoli analizzati…" autocomplete="off">
+    <div class="row" style="margin-top:8px">
+      <select id="f-borsa"><option value="">Tutte le borse</option></select>
+    </div>
+  </div>
+  <div class="card" style="padding:6px 10px;overflow:auto">
+    <table id="tab"><thead><tr><th data-c="0">Titolo</th><th data-c="3">Prezzo</th><th data-c="4">Swing</th><th data-c="5">Lungo</th><th data-c="8">1 mese</th></tr></thead><tbody></tbody></table>
+    <p class="note" id="tab-n"></p>
+  </div>
+</section>
+
+<!-- AFFIDABILITA' -->
+<section class="sez" id="s-aff">
+  <div class="card">
+    <h2>Quanto è affidabile?</h2>
+    <p class="note">Ogni giorno il programma salva le sue previsioni e, quando il periodo è passato, controlla cosa è successo davvero. Più verifiche accumula, più i pesi del modello si basano sui risultati reali.</p>
+  </div>
+  <div id="aff"></div>
+</section>
+</main>
+
+<nav id="nav">
+  <button data-s="oggi" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>Oggi</button>
+  <button data-s="segnali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg>Segnali</button>
+  <button data-s="port"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>Portafoglio</button>
+  <button data-s="cerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Cerca</button>
+  <button data-s="aff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>Affidabilità</button>
+</nav>
+
+<script>
+const D = __DATI__;
+const $ = s => document.querySelector(s);
+const fmt = (x, d=2) => (x==null || !isFinite(x)) ? '–' : Number(x).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (x, d=1) => (x==null || !isFinite(x)) ? '–' : (x>0?'+':'') + fmt(x*100, d) + '%';
+const cls = x => x>0 ? 'up' : (x<0 ? 'dn' : '');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const valuta = v => v==='GBp' ? 'GBp' : (v||'');
+
+// indice di tutti i titoli
+const IDX = {};
+D.tutti.forEach(r => IDX[r[0]] = {t:r[0], n:r[1], b:r[2], c:r[3], s:r[4], l:r[5], atr:r[6], m60:r[7], r21:r[8], r252:r[9], rsi:r[10], v:r[11]});
+
+$('#sub').textContent = `Dati di chiusura del ${new Date(D.data).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${D.tutti.length.toLocaleString('it-IT')} titoli analizzati`;
+if (D.demo) $('#demo').style.display = 'block';
+
+// navigazione
+document.querySelectorAll('#nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('on', x===b));
+  document.querySelectorAll('.sez').forEach(s => s.classList.toggle('on', s.id === 's-' + b.dataset.s));
+  window.scrollTo(0,0);
+});
+
+// sparkline
+function spark(arr){
+  if (!arr || arr.length < 2) return '';
+  const w=84,h=30,mn=Math.min(...arr),mx=Math.max(...arr),rg=(mx-mn)||1;
+  const pts = arr.map((v,i)=>`${(i/(arr.length-1)*w).toFixed(1)},${(h-2-(v-mn)/rg*(h-4)).toFixed(1)}`).join(' ');
+  const col = arr[arr.length-1] >= arr[0] ? 'var(--buy)' : 'var(--sell)';
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-label="andamento 90 giorni"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+function itemHTML(r, tipo, o){
+  const b = tipo==='acquisti' ? '<span class="badge b-buy">▲ COMPRA</span>' : '<span class="badge b-sell">▼ VENDI / EVITA</span>';
+  let lv = `<span>Prezzo <b>${fmt(r.c)} ${valuta(r.v)}</b></span>`;
+  if (tipo==='acquisti' && r.stop) lv += `<span>Stop <b>${fmt(r.stop)}</b> (${pct(r.stop/r.c-1)})</span>`;
+  if (tipo==='acquisti' && r.tgt) lv += `<span>Obiettivo <b>${fmt(r.tgt)}</b> (${pct(r.tgt/r.c-1)})</span>`;
+  lv += `<span>1 mese <b class="${cls(r.r21)}">${pct(r.r21)}</b></span><span>12 mesi <b class="${cls(r.r252)}">${pct(r.r252)}</b></span><span>RSI <b>${fmt(r.rsi,0)}</b></span>`;
+  return `<div class="item">
+    <div><div><span class="tk">${esc(r.t)}</span> ${b}</div><div class="nm">${esc(r.n)} · ${esc(r.b)}</div></div>
+    <div class="right">${spark(r.sp)}<div class="small">punteggio <span class="pct">${fmt(r.p,0)}</span>/100</div></div>
+    <div class="lv">${lv}</div>
+    <div class="why">${esc(r.mot)}</div></div>`;
+}
+
+// OGGI
+(function(){
+  const g = D.regime;
+  const amp = g.ampiezza200, mr = g.mercato_r21, mv = g.mercato_vol21;
+  $('#regime').innerHTML = `
+    <div class="kpi"><div class="v">${fmt(amp*100,0)}%</div><div class="l">titoli sopra la media a 200 giorni</div></div>
+    <div class="kpi"><div class="v ${cls(mr)}">${pct(mr)}</div><div class="l">rendimento mediano ultimo mese</div></div>
+    <div class="kpi"><div class="v">${fmt(mv*100,0)}%</div><div class="l">volatilità mediana (annua)</div></div>`;
+  let t = amp > .6 ? 'Mercato in salute: la maggior parte dei titoli è in trend rialzista.' :
+          amp > .4 ? 'Mercato misto: selezione importante, meglio posizioni più piccole.' :
+          'Mercato debole: pochi titoli in trend, prudenza e stop stretti.';
+  if (mv > .35) t += ' Volatilità alta: riduci le dimensioni delle posizioni.';
+  $('#regime-txt').textContent = t;
+  ['swing','lungo'].forEach(o => {
+    const L = D.liste[o].acquisti.slice(0,5);
+    $('#top-'+o).innerHTML = L.length ? L.map(r => itemHTML(r,'acquisti',o)).join('') : '<p class="note">Nessun titolo supera i filtri oggi.</p>';
+  });
+})();
+
+// SEGNALI
+let selO='swing', selK='acquisti';
+function renderLista(){
+  const L = D.liste[selO][selK];
+  const intro = selK==='acquisti'
+    ? `<p class="note">I ${L.length} titoli con il punteggio più alto (${esc(D.orizzonti[selO])}), massimo pochi per borsa per diversificare. Lo stop è calcolato sulla volatilità (ATR).</p>`
+    : `<p class="note">I titoli con il punteggio più basso: se li possiedi valuta di venderli, altrimenti evitali. (Su DEGIRO la vendita allo scoperto non è disponibile per tutti.)</p>`;
+  $('#lista').innerHTML = intro + L.map(r => itemHTML(r, selK, selO)).join('');
+}
+document.querySelectorAll('#seg-or button').forEach(b => b.onclick = () => { selO=b.dataset.o; document.querySelectorAll('#seg-or button').forEach(x=>x.classList.toggle('on',x===b)); renderLista(); });
+document.querySelectorAll('#seg-tipo button').forEach(b => b.onclick = () => { selK=b.dataset.k; document.querySelectorAll('#seg-tipo button').forEach(x=>x.classList.toggle('on',x===b)); renderLista(); });
+renderLista();
+
+// PORTAFOGLIO
+const KEY='radar-azioni-portafoglio';
+let P = [];
+try { P = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { P = []; }
+const salva = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch(e) {} };
+$('#dl').innerHTML = D.tutti.map(r => `<option value="${esc(r[0])}">${esc(r[1])}</option>`).join('');
+function trovaTicker(s){
+  s = s.trim(); if (!s) return null;
+  if (IDX[s]) return s; if (IDX[s.toUpperCase()]) return s.toUpperCase();
+  const low = s.toLowerCase();
+  const m = D.tutti.find(r => r[1].toLowerCase().startsWith(low)) || D.tutti.find(r => r[1].toLowerCase().includes(low));
+  return m ? m[0] : s.toUpperCase();
+}
+function giudizio(pos){
+  const r = IDX[pos.t];
+  if (!r) return {b:'<span class="badge b-warn">? NON ANALIZZATO</span>', txt:'Titolo non presente oggi nell’analisi (ticker diverso, poco liquido o dati mancanti). Controlla il simbolo in “Cerca”.'};
+  const o = pos.o, p = o==='swing' ? r.s : r.l;
+  const k = o==='swing' ? D.param.swing_stop : D.param.lungo_stop;
+  const stop = Math.max(pos.pr - k*r.atr, (r.m60||0) - k*r.atr);
+  const pnl = r.c/pos.pr - 1;
+  let b, txt;
+  if (r.c < stop) { b='<span class="badge b-sell">▼ VENDI</span>'; txt=`Prezzo sotto lo stop dinamico (${fmt(stop)}).`; }
+  else if (p < 20) { b='<span class="badge b-sell">▼ VENDI</span>'; txt=`Punteggio molto debole (${fmt(p,0)}/100).`; }
+  else if (o==='swing' && r.c >= pos.pr + D.param.swing_tgt*r.atr) { b='<span class="badge b-warn">◆ PRENDI PROFITTO</span>'; txt='Obiettivo swing raggiunto: valuta di vendere almeno metà e alzare lo stop.'; }
+  else if (p < 40) { b='<span class="badge b-warn">◆ ALLEGGERISCI</span>'; txt=`Punteggio sotto la media (${fmt(p,0)}/100): il titolo sta perdendo forza.`; }
+  else if (p >= 80) { b='<span class="badge b-buy">▲ TIENI / INCREMENTA</span>'; txt=`Tra i più forti del mercato (${fmt(p,0)}/100).`; }
+  else { b='<span class="badge b-hold">● TIENI</span>'; txt=`Punteggio nella norma (${fmt(p,0)}/100).`; }
+  return {b, txt, r, stop, pnl};
+}
+function renderPort(){
+  if (!P.length) { $('#port').innerHTML = '<p class="note">Nessun titolo inserito. Aggiungi le tue posizioni DEGIRO qui sopra.</p>'; return; }
+  let tot=0, inv=0;
+  const h = P.map((pos,i) => {
+    const g = giudizio(pos), r = g.r;
+    if (r && pos.q) { tot += r.c*pos.q; inv += pos.pr*pos.q; }
+    return `<div class="item">
+      <div><div><span class="tk">${esc(pos.t)}</span> ${g.b}</div><div class="nm">${r?esc(r.n)+' · ':''}${pos.o==='swing'?'Swing':'Medio-lungo'}</div></div>
+      <div class="right"><button class="del" data-i="${i}" aria-label="rimuovi">×</button></div>
+      <div class="lv">${r?`<span>Prezzo <b>${fmt(r.c)}</b></span><span>Carico <b>${fmt(pos.pr)}</b></span><span>Risultato <b class="${cls(g.pnl)}">${pct(g.pnl)}</b></span><span>Stop <b>${fmt(g.stop)}</b></span>`:''}</div>
+      <div class="why">${g.txt}</div></div>`;
+  }).join('');
+  const sum = inv ? `<div class="grid" style="margin-bottom:6px"><div class="kpi"><div class="v">${fmt(tot,0)}</div><div class="l">valore (valute miste)</div></div><div class="kpi"><div class="v ${cls(tot/inv-1)}">${pct(tot/inv-1)}</div><div class="l">risultato complessivo</div></div></div>` : '';
+  $('#port').innerHTML = sum + h;
+  document.querySelectorAll('#port .del').forEach(b => b.onclick = () => { P.splice(+b.dataset.i,1); salva(); renderPort(); });
+}
+$('#p-add').onclick = () => {
+  const t = trovaTicker($('#p-t').value), q = parseFloat($('#p-q').value), pr = parseFloat($('#p-pr').value);
+  if (!t || !(pr>0)) { $('#p-msg').textContent = 'Inserisci almeno titolo e prezzo di carico.'; return; }
+  P.push({t, q: isFinite(q)?q:0, pr, o: $('#p-o').value}); salva(); renderPort();
+  $('#p-t').value=''; $('#p-q').value=''; $('#p-pr').value=''; $('#p-msg').textContent='';
+};
+$('#p-exp').onclick = async () => {
+  const code = btoa(unescape(encodeURIComponent(JSON.stringify(P))));
+  try { await navigator.clipboard.writeText(code); $('#p-msg').textContent = 'Codice copiato: incollalo sull’altro dispositivo con “Incolla codice”.'; }
+  catch(e) { $('#p-msg').textContent = 'Copia questo codice: ' + code; }
+};
+$('#p-imp').onclick = () => {
+  const c = prompt('Incolla il codice del portafoglio'); if (!c) return;
+  try { P = JSON.parse(decodeURIComponent(escape(atob(c.trim())))); salva(); renderPort(); $('#p-msg').textContent='Portafoglio importato.'; }
+  catch(e) { $('#p-msg').textContent = 'Codice non valido.'; }
+};
+renderPort();
+
+// CERCA
+const borse = [...new Set(D.tutti.map(r=>r[2]))].sort();
+$('#f-borsa').innerHTML += borse.map(b=>`<option>${esc(b)}</option>`).join('');
+let sortC = 4, sortDir = -1;
+function renderTab(){
+  const q = $('#q').value.trim().toLowerCase(), fb = $('#f-borsa').value;
+  let R = D.tutti.filter(r => (!fb || r[2]===fb) && (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
+  R.sort((a,b) => { const x=a[sortC], y=b[sortC]; if (typeof x==='string') return sortDir*x.localeCompare(y); return sortDir*((x??-1e9)-(y??-1e9)); });
+  const n = R.length; R = R.slice(0, 300);
+  $('#tab tbody').innerHTML = R.map(r => `<tr><td><b>${esc(r[0])}</b><br><span class="small">${esc(r[1])}</span></td><td>${fmt(r[3])}</td><td><span class="pct">${fmt(r[4],0)}</span></td><td><span class="pct">${fmt(r[5],0)}</span></td><td class="${cls(r[8])}">${pct(r[8])}</td></tr>`).join('');
+  $('#tab-n').textContent = n > 300 ? `Mostrati 300 di ${n.toLocaleString('it-IT')} titoli: usa la ricerca per restringere.` : `${n} titoli. Punteggi da 0 a 100: più alto = più favorevole.`;
+}
+$('#q').oninput = renderTab; $('#f-borsa').onchange = renderTab;
+document.querySelectorAll('#tab th').forEach(th => th.onclick = () => { const c=+th.dataset.c; sortDir = (sortC===c) ? -sortDir : (c===0?1:-1); sortC=c; renderTab(); });
+renderTab();
+
+// AFFIDABILITA'
+function barChart(serie){
+  if (!serie.length) return '';
+  const W=640,H=180,pad=28, n=serie.length, vals=serie.map(s=>s.extra);
+  const mx = Math.max(1, ...vals.map(Math.abs));
+  const y0 = H/2, bw = Math.max(2, (W-pad)/n - 2);
+  const bars = serie.map((s,i)=>{
+    const x = pad + i*((W-pad)/n), h = Math.abs(s.extra)/mx*(H/2-12), y = s.extra>=0 ? y0-h : y0;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="${Math.min(2,bw/2)}" fill="${s.extra>=0?'var(--pos)':'var(--neg)'}" data-i="${i}"/>`;
+  }).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Rendimento extra degli acquisti per data">
+    <line x1="${pad}" x2="${W}" y1="${y0}" y2="${y0}" stroke="var(--line)"/>
+    <text x="0" y="14" font-size="16" fill="var(--muted)">+${fmt(mx,1)}%</text><text x="0" y="${H-4}" font-size="16" fill="var(--muted)">-${fmt(mx,1)}%</text>
+    ${bars}</svg><div class="tip"></div></div>`;
+}
+function bindTip(el, serie){
+  const tip = el.querySelector('.tip'), svg = el.querySelector('svg');
+  if (!svg) return;
+  const show = ev => {
+    const pt = ev.touches ? ev.touches[0] : ev; const rc = svg.getBoundingClientRect();
+    const i = Math.min(serie.length-1, Math.max(0, Math.floor((pt.clientX - rc.left - rc.width*28/640) / ((rc.width*(612/640))/serie.length))));
+    const s = serie[i]; if (!s) return;
+    tip.innerHTML = `<b>${new Date(s.d).toLocaleDateString('it-IT')}</b><br>Acquisti vs mercato: ${s.extra>0?'+':''}${fmt(s.extra,2)}%<br>Correlazione (IC): ${fmt(s.ic,3)}`;
+    tip.style.display='block'; tip.style.left = Math.min(rc.width-170, Math.max(0, pt.clientX-rc.left-80))+'px'; tip.style.top='0px';
+  };
+  svg.addEventListener('mousemove', show); svg.addEventListener('touchstart', show, {passive:true});
+  svg.addEventListener('mouseleave', ()=> tip.style.display='none');
+}
+(function(){
+  let h='';
+  ['swing','lungo'].forEach(o => {
+    const st = D.stat[o] || {}, tr = D.track[o] || {n:0};
+    h += `<div class="card"><h2>${esc(D.orizzonti[o])}</h2>`;
+    h += `<h3>Verifica sul passato (ultimo anno, dati mai visti dal modello)</h3>`;
+    if (st.val_ic_ml != null) {
+      h += `<div class="grid">
+        <div class="kpi"><div class="v ${cls(st.val_extra_top10)}">${pct(st.val_extra_top10,2)}</div><div class="l">extra-rendimento medio del miglior 10% vs media, per periodo</div></div>
+        <div class="kpi"><div class="v">${fmt(st.val_ic_ml,3)}</div><div class="l">IC modello ML</div></div>
+        <div class="kpi"><div class="v">${fmt(st.val_ic_regole,3)}</div><div class="l">IC regole tecniche</div></div>
+        <div class="kpi"><div class="v">${fmt((st.peso_ml||0)*100,0)}%</div><div class="l">peso dato al modello ML oggi</div></div></div>`;
+      if (st.feature_principali) h += `<p class="note">Indicatori che oggi contano di più: ${st.feature_principali.map(f=>esc(f.nome)).join(', ')}.</p>`;
+    } else h += `<p class="note">Storia insufficiente per la verifica.</p>`;
+    h += `<h3>Track record reale</h3>`;
+    if (tr.n > 0) {
+      h += `<div class="grid">
+        <div class="kpi"><div class="v">${tr.n}</div><div class="l">giorni verificati</div></div>
+        <div class="kpi"><div class="v ${cls(tr.rend_acquisti)}">${pct(tr.rend_acquisti,2)}</div><div class="l">rendimento medio lista acquisti</div></div>
+        <div class="kpi"><div class="v ${cls(tr.rend_universo)}">${pct(tr.rend_universo,2)}</div><div class="l">rendimento medio di tutto il mercato</div></div>
+        <div class="kpi"><div class="v">${fmt(tr.acquisti_battono_mediana*100,0)}%</div><div class="l">acquisti che hanno battuto il mercato</div></div>
+        <div class="kpi"><div class="v">${fmt(tr.ic_recente,3)}</div><div class="l">IC ultime 60 verifiche</div></div></div>
+        <h3>Acquisti meno mercato, per giorno di segnale</h3><div id="ch-${o}">${barChart(tr.serie)}</div>
+        <p class="note">Blu = la lista acquisti ha fatto meglio del mercato; arancio = peggio.</p>`;
+    } else {
+      h += `<p class="note">Ancora nessuna verifica: le prime arriveranno dopo ${o==='swing'?'circa 3 settimane':'circa 6 mesi'} di utilizzo quotidiano.</p>`;
+    }
+    h += `</div>`;
+  });
+  h += `<div class="card"><h3 style="margin-top:0">Come leggere questi numeri</h3><p class="note">L’IC (information coefficient) misura quanto la classifica di oggi anticipa la classifica dei rendimenti futuri: 0 = nessuna capacità, 0,03-0,05 è già un vantaggio utile, sopra 0,10 è raro e va guardato con sospetto. Un modello che va bene nel passato può smettere di funzionare: guarda soprattutto il track record reale.</p></div>`;
+  $('#aff').innerHTML = h;
+  ['swing','lungo'].forEach(o => { const el = document.getElementById('ch-'+o); if (el) bindTip(el, D.track[o].serie); });
+})();
+</script>
+</body>
+</html>

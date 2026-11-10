@@ -1,0 +1,65 @@
+name: Analisi giornaliera
+
+on:
+  schedule:
+    - cron: "30 22 * * 1-5"   # 23:30 ora italiana (inverno), dal lunedì al venerdì
+  workflow_dispatch:           # pulsante "Run workflow" per lanciarlo a mano
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: analisi
+  cancel-in-progress: false
+
+jobs:
+  analisi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Recupera i prezzi già scaricati
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: prezzi-${{ github.run_id }}
+          restore-keys: prezzi-
+
+      - name: Installa le librerie
+        run: pip install -r requirements.txt
+
+      - name: Analisi
+        run: python main.py
+
+      - name: Conserva i prezzi per domani
+        if: always() && hashFiles('cache/prezzi.parquet') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: cache
+          key: prezzi-${{ github.run_id }}
+
+      - name: Salva previsioni e track record
+        run: |
+          git config user.name "radar-azioni-bot"
+          git config user.email "radar-azioni-bot@users.noreply.github.com"
+          git add stato
+          git commit -m "Analisi del $(date -u +%F)" || echo "niente da salvare"
+          git push
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: output
+      - id: deploy
+        uses: actions/deploy-pages@v4
