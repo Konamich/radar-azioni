@@ -418,7 +418,7 @@ function renderPiano(){
   const m = Math.max(10, +$('#pi-m').value || 100), core = Math.min(100, Math.max(0, +$('#pi-core').value || 80))/100;
   const etf = +$('#pi-etf').value || 0;
   try { localStorage.setItem(PK, JSON.stringify({m, core: core*100, etf: etf||null})); } catch(e) {}
-  const mc = m*core, ms = m*(1-core);
+  const mc = Math.round(m*core*100)/100, ms = Math.round((m - m*core)*100)/100;
   // frequenza ETF: almeno 1 quota intera per ordine
   let ogniCore = etf > 0 ? Math.max(1, Math.ceil(etf / Math.max(mc,1))) : (mc >= 150 ? 1 : 2);
   const ordineCore = mc*ogniCore;
