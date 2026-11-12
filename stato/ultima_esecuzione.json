@@ -1,16 +1,16 @@
 {
-  "data": "2026-11-11",
-  "generato": "2026-11-12T03:22",
-  "titoli": 3980,
-  "durata_sec": 404,
+  "data": "2026-11-12",
+  "generato": "2026-11-12T13:54",
+  "titoli": 3978,
+  "durata_sec": 391,
   "statistiche": {
     "swing": {
       "orizzonte": "swing",
       "giorni": 15,
-      "val_ic_ml": 0.010239388193142419,
-      "val_ic_regole": -0.002629048535563554,
+      "val_ic_ml": 0.010239187394273206,
+      "val_ic_regole": -0.0026304903300117905,
       "val_ic_ml_positivo": 0.5421686746987951,
-      "val_extra_top10": -0.00042887820745818317,
+      "val_extra_top10": -0.00042910617776215076,
       "val_giorni": 83,
       "righe_addestramento": 900000,
       "feature_principali": [
@@ -44,35 +44,35 @@
     "lungo": {
       "orizzonte": "lungo",
       "giorni": 126,
-      "val_ic_ml": 0.03998188345159938,
-      "val_ic_regole": 0.01920998607914445,
+      "val_ic_ml": 0.039981772155095546,
+      "val_ic_regole": 0.019209788160674982,
       "val_ic_ml_positivo": 0.7469879518072289,
-      "val_extra_top10": -0.018878895789384842,
+      "val_extra_top10": -0.018878689035773277,
       "val_giorni": 83,
       "righe_addestramento": 900000,
       "feature_principali": [
         {
           "nome": "ATR %",
-          "valore": 0.0728
+          "valore": 0.0736
         },
         {
           "nome": "distanza dal minimo annuo",
-          "valore": 0.0687
+          "valore": 0.0682
         },
         {
           "nome": "ampiezza mercato",
-          "valore": 0.0518
+          "valore": 0.0516
         },
         {
           "nome": "volatilit\u00e0 mercato",
-          "valore": 0.0355
+          "valore": 0.0378
+        },
+        {
+          "nome": "distanza dal massimo annuo",
+          "valore": 0.0306
         },
         {
           "nome": "MM50 vs MM200",
-          "valore": 0.0329
-        },
-        {
-          "nome": "volatilit\u00e0 3 mesi",
           "valore": 0.0295
         }
       ],
