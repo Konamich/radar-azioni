@@ -69,12 +69,10 @@ def esegui(args):
     perf = tracciamento.valuta(m)  # nel caso servisse a ricalcolare
     riep = tracciamento.riepilogo(perf)
 
-    # mini-grafici: ultimi 90 prezzi per i titoli in lista
-    in_lista = set()
-    for o in risultati:
-        for k in ("acquisti", "vendite"):
-            in_lista |= set(risultati[o][k]["ticker"])
-    storia = {t: [round(float(x), 4) for x in m["close"][t].iloc[-90:].values if np.isfinite(x)]
+    # mini-grafici: ultimi 90 prezzi per i titoli più forti (possibili acquisti)
+    pu = report.punteggio_unico(tab)
+    in_lista = set(tab.loc[pu >= 90, "ticker"])
+    storia = {t: [float(f"{x:.4g}") for x in m["close"][t].iloc[-60:].values if np.isfinite(x)]
               for t in in_lista}
 
     regime_oggi = {k: float(regime.loc[oggi, k]) for k in regime.columns}

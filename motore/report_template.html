@@ -5,472 +5,663 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0e1014">
+<meta name="theme-color" content="#0c1622">
+<meta name="color-scheme" content="dark">
 <title>Radar Azioni</title>
 <link rel="icon" type="image/svg+xml" href="icona.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Radar Azioni">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0e1014;--card:#161a21;--card2:#1c212a;--line:#262c36;--ink:#e9ecf1;--ink2:#aab2bf;--muted:#7a8494;
-  --acc:#5b9cff;--buy:#2fbf8f;--sell:#ef6b5b;--warn:#e7b443;--pos:#5b9cff;--neg:#f0904a;
-  --r:14px;
-}
-@media (prefers-color-scheme: light){
-  :root{--bg:#f4f5f8;--card:#fff;--card2:#f7f8fa;--line:#e3e6eb;--ink:#14171c;--ink2:#4a5260;--muted:#7a8290;
-  --acc:#2c6fe0;--buy:#118a62;--sell:#c8402f;--warn:#a87400;--pos:#2c6fe0;--neg:#c96a1c;}
+  --abisso:#0c1622;      /* fondo */
+  --pannello:#122030;    /* superfici */
+  --pannello2:#172a3d;
+  --linea:#21364b;
+  --testo:#e9eef4;
+  --testo2:#9aabbe;
+  --spento:#61758c;
+  --segnale:#4fd1a5;     /* radar, acquisto */
+  --segnale-f:rgba(79,209,165,.13);
+  --vendi:#ff8a65;
+  --vendi-f:rgba(255,138,101,.13);
+  --oro:#f2c46d;         /* la scelta del giorno */
+  --oro-f:rgba(242,196,109,.14);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
-  padding-bottom:calc(76px + env(safe-area-inset-bottom))}
-header{padding:calc(14px + env(safe-area-inset-top)) 16px 8px;max-width:980px;margin:0 auto}
-h1{font-size:22px;margin:0;letter-spacing:-.3px}
-.sub{color:var(--muted);font-size:13px}
-main{max-width:980px;margin:0 auto;padding:0 12px}
-.sez{display:none}.sez.on{display:block}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:10px 0}
-.card h2{font-size:16px;margin:0 0 8px}
-.card h3{font-size:14px;margin:12px 0 6px;color:var(--ink2);font-weight:600}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.kpi{background:var(--card2);border-radius:10px;padding:10px}
-.kpi .v{font-size:20px;font-weight:650;font-variant-numeric:tabular-nums}
-.kpi .l{font-size:12px;color:var(--muted)}
-.seg{display:flex;background:var(--card2);border-radius:10px;padding:3px;gap:3px;margin:10px 0}
-.seg button{flex:1;border:0;background:transparent;color:var(--ink2);padding:8px;border-radius:8px;font:inherit;font-size:14px}
-.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.25)}
-.item{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:12px 0;border-top:1px solid var(--line)}
-.item:first-of-type{border-top:0}
-.tk{font-weight:650}.nm{color:var(--ink2);font-size:13px}
-.right{text-align:right;font-variant-numeric:tabular-nums}
-.small{font-size:12px;color:var(--muted)}
-.why{grid-column:1/-1;font-size:12.5px;color:var(--ink2)}
-.lv{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;font-variant-numeric:tabular-nums}
-.lv span b{font-weight:600}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:650;padding:2px 8px;border-radius:99px}
-.b-buy{color:var(--buy);background:color-mix(in srgb,var(--buy) 14%,transparent)}
-.b-sell{color:var(--sell);background:color-mix(in srgb,var(--sell) 14%,transparent)}
-.b-warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent)}
-.b-hold{color:var(--acc);background:color-mix(in srgb,var(--acc) 14%,transparent)}
-.pct{display:inline-block;min-width:44px;text-align:center;font-weight:650;border-radius:8px;padding:2px 6px;background:var(--card2)}
-.up{color:var(--buy)}.dn{color:var(--sell)}
-nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);
-  border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
-nav button{flex:1;max-width:120px;border:0;background:none;color:var(--muted);font:inherit;font-size:11px;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:2px}
-nav button svg{width:22px;height:22px}
-nav button.on{color:var(--acc)}
-input,select{font:inherit;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%}
-.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:110px}
-.btn{border:0;background:var(--acc);color:#fff;font:inherit;font-weight:600;border-radius:10px;padding:10px 14px;cursor:pointer}
-.btn.sec{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-th,td{padding:7px 6px;border-top:1px solid var(--line);text-align:right}
-th:first-child,td:first-child{text-align:left}
-th{color:var(--muted);font-weight:600;font-size:12px;cursor:pointer;position:sticky;top:0;background:var(--card)}
-.note{font-size:12.5px;color:var(--muted)}
-.warnbox{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
-.chart{position:relative}
-.tip{position:absolute;pointer-events:none;background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;display:none;white-space:nowrap;z-index:3}
-.del{background:none;border:0;color:var(--muted);font-size:18px;cursor:pointer}
+html{-webkit-text-size-adjust:100%;background:var(--abisso)}
+body{margin:0;color:var(--testo);
+  background:
+    radial-gradient(1100px 600px at 15% -10%, rgba(79,209,165,.09), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(80,130,200,.10), transparent 60%),
+    var(--abisso);
+  background-attachment:fixed;
+  font:15px/1.55 "Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  font-variant-numeric:tabular-nums;padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--segnale);outline-offset:2px;border-radius:6px}
+
+/* testata */
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:calc(20px + env(safe-area-inset-top)) 0 18px}
+.marchio{display:flex;align-items:center;gap:12px}
+.marchio svg{width:36px;height:36px;flex:none}
+.marchio h1{margin:0;font-size:18px;font-weight:800;letter-spacing:-.3px}
+.marchio p{margin:0;font-size:12.5px;color:var(--spento)}
+.schede{display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--linea);border-radius:999px;padding:4px}
+.schede button{border:0;background:none;color:var(--testo2);font-weight:700;font-size:13.5px;padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.schede button.on{background:var(--testo);color:var(--abisso)}
+@media (max-width:620px){
+  header{flex-wrap:wrap}.schede{width:100%}.schede button{flex:1}
+}
+.vista{display:none}.vista.on{display:block}
+.avviso{background:var(--oro-f);color:var(--oro);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(300px,440px) 1fr;gap:28px;align-items:center;padding:6px 0 26px}
+@media (max-width:820px){.hero{grid-template-columns:1fr;gap:6px}}
+.radar{position:relative;aspect-ratio:1;width:100%;max-width:440px;margin:0 auto}
+.radar svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.sweep{position:absolute;inset:6%;border-radius:50%;
+  background:conic-gradient(from 0deg, rgba(79,209,165,.28), rgba(79,209,165,0) 22%, transparent 100%);
+  animation:giro 7s linear infinite;mask:radial-gradient(circle, #000 69%, transparent 70%);-webkit-mask:radial-gradient(circle, #000 69%, transparent 70%)}
+@keyframes giro{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sweep{animation:none;opacity:.5}}
+.blip{cursor:pointer;transition:r .15s}
+.radar-leg{display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--spento);margin-top:4px;flex-wrap:wrap}
+.radar-leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:0}
+.radar-tip{position:absolute;pointer-events:none;background:var(--pannello2);border:1px solid var(--linea);border-radius:10px;
+  padding:7px 10px;font-size:12.5px;white-space:nowrap;transform:translate(-50%,-120%);display:none;z-index:3}
+
+.verdetto .data{font-size:13px;color:var(--spento);margin:0 0 6px}
+.verdetto h2{font-size:clamp(30px,5.2vw,46px);line-height:1.08;letter-spacing:-1.2px;margin:0 0 12px;font-weight:800}
+.verdetto h2 .tk{color:var(--oro)}
+.verdetto .spiega{color:var(--testo2);font-size:15.5px;margin:0 0 22px;max-width:48ch}
+.budget{background:rgba(255,255,255,.03);border:1px solid var(--linea);border-radius:18px;padding:16px 18px}
+.budget-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.budget .cifra{font-size:26px;font-weight:800;letter-spacing:-.6px}
+.budget .cifra small{font-size:14px;font-weight:600;color:var(--testo2);letter-spacing:0}
+.budget label{font-size:12.5px;color:var(--spento);display:flex;align-items:center;gap:6px}
+.budget input{width:70px;background:transparent;border:1px solid var(--linea);color:var(--testo);border-radius:8px;padding:5px 8px;font:inherit;font-weight:700;text-align:right}
+.barra{height:6px;border-radius:99px;background:rgba(255,255,255,.07);margin:12px 0 8px;overflow:hidden}
+.barra i{display:block;height:100%;background:linear-gradient(90deg,var(--segnale),#7fe3c2);border-radius:99px}
+.budget .nota{font-size:12.5px;color:var(--spento);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.umore{display:inline-flex;align-items:center;gap:6px}
+.umore::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+
+/* blocchi */
+.griglia{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;align-items:start}
+@media (max-width:900px){.griglia{grid-template-columns:1fr}}
+.blocco{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));border:1px solid var(--linea);border-radius:22px;margin-bottom:18px;overflow:hidden}
+.blocco-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:18px 20px 4px}
+.blocco-h h3{margin:0;font-size:16px;font-weight:800;letter-spacing:-.2px}
+.blocco-h span{font-size:12.5px;color:var(--spento)}
+.vuoto{padding:14px 20px 22px;color:var(--testo2);font-size:14.5px}
+.vuoto b{color:var(--testo);display:block;font-size:16px;margin-bottom:2px}
+
+/* scelta */
+.scelta{padding:14px 20px 20px}
+.scelta-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.sigla{display:flex;align-items:center;gap:12px}
+.mono{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-weight:800;font-size:14px;letter-spacing:-.3px;flex:none;
+  background:var(--oro-f);color:var(--oro);border:1px solid rgba(242,196,109,.3)}
+.sigla b{font-size:19px;letter-spacing:-.3px;display:block;line-height:1.2}
+.sigla span{color:var(--testo2);font-size:13.5px}
+.prezzo{text-align:right}
+.prezzo b{font-size:19px;display:block;line-height:1.2}
+.prezzo span{font-size:13px}
+.grafico{margin:14px -4px 6px;position:relative}
+.grafico svg{width:100%;height:150px;display:block}
+.dati{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 16px}
+@media (max-width:480px){.dati{grid-template-columns:repeat(2,1fr)}}
+.dati div{background:rgba(255,255,255,.035);border-radius:14px;padding:11px 13px}
+.dati small{display:block;color:var(--spento);font-size:12px}
+.dati b{font-size:16px;font-weight:700}
+.motivo{color:var(--testo2);font-size:14px;margin:0 0 6px}
+.motivo b{color:var(--testo);font-weight:700}
+.azioni{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:flex-end}
+.btn{border:0;background:var(--segnale);color:#062018;font-weight:800;font-size:14px;border-radius:12px;padding:12px 18px;cursor:pointer}
+.btn.vuoto-b{background:transparent;color:var(--testo);border:1px solid var(--linea);font-weight:700}
+.btn.rosso{background:var(--vendi);color:#2a0d04}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:10px}
+.campo{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--spento)}
+.campo input{width:130px}
+input,select{font:inherit;font-size:15px;color:var(--testo);background:rgba(255,255,255,.04);border:1px solid var(--linea);border-radius:11px;padding:10px 12px;min-width:0}
+select option{background:var(--pannello)}
+input:focus,select:focus{outline:none;border-color:var(--segnale)}
+
+/* righe */
+.riga{display:grid;grid-template-columns:40px 1fr auto auto;align-items:center;gap:12px;padding:12px 20px;border-top:1px solid rgba(255,255,255,.05)}
+.riga.click{cursor:pointer}.riga.click:hover{background:rgba(255,255,255,.025)}
+.riga .mono{width:40px;height:40px;border-radius:12px;font-size:12px;background:rgba(255,255,255,.05);color:var(--testo2);border:0}
+.riga .nome{min-width:0}
+.riga .nome b{display:block;font-size:14.5px}
+.riga .nome>span{display:block;color:var(--spento);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.riga .num{text-align:right;font-size:13.5px;white-space:nowrap}
+.riga .num span{display:block;font-size:12.5px}
+.su{color:var(--segnale)}.giu{color:var(--vendi)}
+.punti{width:58px;text-align:right}
+.punti b{font-size:15px;font-weight:800}
+.punti i{display:block;height:4px;border-radius:99px;background:rgba(255,255,255,.08);margin-top:4px;overflow:hidden}
+.punti i u{display:block;height:100%;border-radius:99px}
+.etich{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:6px;margin-left:6px;vertical-align:1px}
+.e-tieni{background:rgba(255,255,255,.07);color:var(--testo2)}.e-vendi{background:var(--vendi-f);color:var(--vendi)}.e-dubbio{background:var(--oro-f);color:var(--oro)}
+.dett{display:none;padding:2px 20px 16px 72px;font-size:13px;color:var(--testo2)}
+.dett.on{display:block}
+.dett .kv{display:flex;flex-wrap:wrap;gap:6px 18px}
+.dett .kv b{color:var(--testo);font-weight:700}
+@media (max-width:480px){.riga{grid-template-columns:36px 1fr auto}.riga .num{display:none}.dett{padding-left:20px}.riga .mono{width:36px;height:36px}}
+
+details summary{cursor:pointer;list-style:none;padding:14px 20px;border-top:1px solid rgba(255,255,255,.05);font-weight:700;font-size:14px;color:var(--segnale)}
+details summary::-webkit-details-marker{display:none}
+.form{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end;padding:0 20px 18px}
+.form label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--spento)}
+@media (max-width:560px){.form{grid-template-columns:1fr 1fr}.form label:first-child{grid-column:1/-1}}
+
+/* vendita */
+.vendita{background:rgba(255,255,255,.03);border:1px solid var(--linea);border-radius:16px;padding:14px;margin-top:12px;width:100%}
+.vf-campi{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.vf-campi .campo{flex:1;min-width:130px}.vf-campi .campo input{width:100%}
+.vf-conto{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--testo2);margin:12px 0 4px}
+.vf-conto b{color:var(--testo)}.vf-conto b.su{color:var(--segnale)}.vf-conto b.giu{color:var(--vendi)}
+.vf-dom{font-weight:800;margin:12px 0 8px;font-size:14.5px}
+.scelte{display:grid;gap:8px}
+.opz{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--linea);border-radius:12px;padding:10px 12px;cursor:pointer}
+.opz:has(input:checked){border-color:rgba(79,209,165,.55);background:var(--segnale-f)}
+.opz input{accent-color:var(--segnale);margin-top:3px}
+.opz b{display:block;font-size:14px}.opz small{display:block;color:var(--testo2);font-size:12.5px}
+.incassi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 20px 6px}
+.incassi div{background:rgba(255,255,255,.035);border-radius:12px;padding:9px 11px}
+.incassi small{display:block;color:var(--spento);font-size:11.5px}.incassi b{font-size:14.5px}
+
+/* tutte */
+.filtri{display:grid;grid-template-columns:1fr 180px 160px;gap:10px;padding:18px 20px 8px}
+@media (max-width:620px){.filtri{grid-template-columns:1fr 1fr}.filtri input{grid-column:1/-1}}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:6px 20px 12px}
+.chip{border:1px solid var(--linea);background:transparent;color:var(--testo2);border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;cursor:pointer}
+.chip.on{background:var(--segnale-f);border-color:rgba(79,209,165,.45);color:var(--segnale)}
+.conta{padding:4px 20px 8px;font-size:12.5px;color:var(--spento)}
+.altre{display:block;margin:10px auto 18px}
+.piede{font-size:12.5px;color:var(--spento);line-height:1.6;max-width:80ch;margin:8px 0 0}
 </style>
 </head>
 <body>
+<div class="wrap">
 <header>
-  <h1>Radar Azioni</h1>
-  <div class="sub" id="sub"></div>
+  <div class="marchio">
+    <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16.5" fill="none" stroke="#4fd1a5" stroke-opacity=".35"/><circle cx="18" cy="18" r="10" fill="none" stroke="#4fd1a5" stroke-opacity=".35"/><path d="M18 18 L18 1.5 A16.5 16.5 0 0 1 32.3 9.75 Z" fill="#4fd1a5" fill-opacity=".35"/><circle cx="18" cy="18" r="2.2" fill="#4fd1a5"/><circle cx="25" cy="10" r="2.4" fill="#f2c46d"/></svg>
+    <div><h1>Radar Azioni</h1><p id="sub"></p></div>
+  </div>
+  <nav class="schede" id="schede">
+    <button data-v="oggi" class="on">Oggi</button>
+    <button data-v="tutte">Tutte le azioni</button>
+  </nav>
 </header>
-<main>
+<div class="avviso" id="demo" style="display:none"><b>Dati simulati.</b> Questa è una prova: i titoli non esistono.</div>
 
-<!-- OGGI -->
-<section class="sez on" id="s-oggi">
-  <div class="card warnbox" id="demo" style="display:none"><b>Dati simulati.</b> Questo report è una prova: i titoli non esistono.</div>
-  <div class="card">
-    <h2>Il mercato oggi</h2>
-    <div class="grid" id="regime"></div>
-    <p class="note" id="regime-txt"></p>
-  </div>
-  <div class="card"><h2>Migliori swing (1-4 settimane)</h2><div id="top-swing"></div></div>
-  <div class="card"><h2>Migliori medio-lungo (6 mesi)</h2><div id="top-lungo"></div></div>
-  <p class="note" style="padding:0 4px">Segnali statistici generati automaticamente, non consulenza finanziaria. Verifica sempre il titolo su DEGIRO e decidi tu quanto rischiare.</p>
-</section>
-
-<!-- SEGNALI -->
-<section class="sez" id="s-segnali">
-  <div class="seg" id="seg-or"><button data-o="swing" class="on">Swing</button><button data-o="lungo">Medio-lungo</button></div>
-  <div class="seg" id="seg-tipo"><button data-k="acquisti" class="on">Da comprare</button><button data-k="vendite">Da vendere / evitare</button></div>
-  <div class="card"><div id="lista"></div></div>
-</section>
-
-<!-- PORTAFOGLIO -->
-<section class="sez" id="s-port">
-  <div class="card">
-    <h2>Il mio portafoglio</h2>
-    <p class="note">I tuoi titoli restano solo su questo dispositivo. Per ogni posizione il programma ti dice se tenere, alleggerire o vendere.</p>
-    <datalist id="dl"></datalist>
-    <div class="row">
-      <input id="p-t" list="dl" placeholder="Titolo (es. ENI.MI o Apple)" autocomplete="off">
-      <input id="p-q" type="number" inputmode="decimal" placeholder="Quantità">
-      <input id="p-pr" type="number" inputmode="decimal" placeholder="Prezzo di carico">
-      <select id="p-o"><option value="swing">Swing</option><option value="lungo">Medio-lungo</option></select>
+<!-- ============ OGGI ============ -->
+<section class="vista on" id="v-oggi">
+  <div class="hero">
+    <div>
+      <div class="radar" id="radar">
+        <div class="sweep"></div>
+        <svg viewBox="-110 -110 220 220" id="radar-svg" role="img" aria-label="Radar delle azioni più forti di oggi"></svg>
+        <div class="radar-tip" id="radar-tip"></div>
+      </div>
+      <div class="radar-leg"><span><i style="background:var(--oro)"></i>Scelta di oggi</span><span><i style="background:var(--segnale)"></i>Più forti</span><span><i style="background:transparent;border:1.5px solid var(--testo)"></i>I tuoi titoli</span></div>
     </div>
-    <div class="row" style="margin-top:8px"><button class="btn" id="p-add">Aggiungi</button></div>
+    <div class="verdetto">
+      <p class="data" id="v-data"></p>
+      <h2 id="v-titolo"></h2>
+      <p class="spiega" id="v-spiega"></p>
+      <div class="budget">
+        <div class="budget-top">
+          <div class="cifra" id="b-res"></div>
+          <label>Budget al mese <input id="b-tot" type="number" inputmode="decimal" min="10" step="5"> €</label>
+        </div>
+        <div class="barra"><i id="b-bar"></i></div>
+        <div class="nota"><span id="b-txt"></span><span class="umore" id="umore"></span></div>
+      </div>
+    </div>
   </div>
-  <div class="card"><div id="port"></div></div>
-  <div class="card">
-    <h3 style="margin-top:0">Copia il portafoglio su un altro dispositivo</h3>
-    <div class="row"><button class="btn sec" id="p-exp">Copia codice</button><button class="btn sec" id="p-imp">Incolla codice</button></div>
-    <p class="note" id="p-msg"></p>
+
+  <div class="griglia">
+    <div>
+      <div class="blocco" id="c-compra"></div>
+    </div>
+    <div>
+      <div class="blocco" id="c-vendi"></div>
+      <div class="blocco">
+        <div class="blocco-h"><h3>I tuoi titoli</h3><span id="p-tot"></span></div>
+        <div id="incassi"></div>
+        <div id="port"></div>
+        <details>
+          <summary>+ Aggiungi un titolo che hai già su DEGIRO</summary>
+          <datalist id="dl"></datalist>
+          <div class="form">
+            <label>Titolo<input id="a-t" list="dl" placeholder="es. ENI.MI o Apple" autocomplete="off"></label>
+            <label>Quantità<input id="a-q" type="number" inputmode="decimal"></label>
+            <label>Prezzo di carico<input id="a-p" type="number" inputmode="decimal" step="any"></label>
+            <button class="btn sm" id="a-ok">Aggiungi</button>
+          </div>
+          <p class="piede" id="a-msg" style="padding:0 20px 16px;margin:0">Restano salvati solo su questo dispositivo.</p>
+        </details>
+      </div>
+    </div>
   </div>
+  <p class="piede" id="piede"></p>
 </section>
 
-<!-- CERCA -->
-<section class="sez" id="s-cerca">
-  <div class="card">
-    <input id="q" placeholder="Cerca tra tutti i titoli analizzati…" autocomplete="off">
-    <div class="row" style="margin-top:8px">
+<!-- ============ TUTTE LE AZIONI ============ -->
+<section class="vista" id="v-tutte">
+  <div class="blocco">
+    <div class="filtri">
+      <input id="q" placeholder="Cerca per nome o simbolo" autocomplete="off">
       <select id="f-borsa"><option value="">Tutte le borse</option></select>
+      <select id="f-ord">
+        <option value="p">Punteggio</option><option value="r252">Rendimento 12 mesi</option>
+        <option value="r21">Rendimento 1 mese</option><option value="n">Nome</option>
+      </select>
     </div>
-  </div>
-  <div class="card" style="padding:6px 10px;overflow:auto">
-    <table id="tab"><thead><tr><th data-c="0">Titolo</th><th data-c="3">Prezzo</th><th data-c="4">Swing</th><th data-c="5">Lungo</th><th data-c="8">1 mese</th></tr></thead><tbody></tbody></table>
-    <p class="note" id="tab-n"></p>
-  </div>
-</section>
-
-<!-- AFFIDABILITA' -->
-<section class="sez" id="s-aff">
-  <div class="card">
-    <h2>Quanto è affidabile?</h2>
-    <p class="note">Ogni giorno il programma salva le sue previsioni e, quando il periodo è passato, controlla cosa è successo davvero. Più verifiche accumula, più i pesi del modello si basano sui risultati reali.</p>
-  </div>
-  <div id="aff"></div>
-</section>
-
-<!-- PIANO -->
-<section class="sez" id="s-piano">
-  <div class="card">
-    <h2>Piano di accumulo su DEGIRO</h2>
-    <p class="note">Imposta quanto versi ogni mese: il piano divide tra ETF (base, diversificata) e azioni scelte dal Radar (parte attiva), tenendo conto di commissioni, cambio, Tobin tax, IVAFE e tasse.</p>
-    <div class="row">
-      <label class="small" style="flex:1">Versamento mensile (€)<input id="pi-m" type="number" inputmode="decimal" value="100"></label>
-      <label class="small" style="flex:1">Quota ETF (%)<input id="pi-core" type="number" inputmode="decimal" value="80"></label>
-      <label class="small" style="flex:1">Prezzo 1 quota ETF (€)<input id="pi-etf" type="number" inputmode="decimal" placeholder="es. 120"></label>
+    <div class="chips" id="chips">
+      <button class="chip on" data-f="">Tutte</button>
+      <button class="chip" data-f="forti">Forti</button>
+      <button class="chip" data-f="deboli">Deboli</button>
+      <button class="chip" data-f="budget">Comprabili col budget</button>
     </div>
+    <div class="conta" id="conta"></div>
+    <div id="lista"></div>
+    <button class="btn vuoto-b sm altre" id="altre" style="display:none">Mostra altre</button>
   </div>
-  <div class="card"><h2>Cosa fare</h2><div id="pi-azioni"></div></div>
-  <div class="card"><h2>Candidati per la parte azioni</h2><div id="pi-cand"></div></div>
-  <div class="card"><h2>Quanto potrebbe diventare</h2><div id="pi-proj"></div></div>
-  <div class="card"><h2>Costi DEGIRO usati nei calcoli</h2><div id="pi-costi"></div></div>
-  <div class="card warnbox"><h2>Scalping e trading veloce</h2><div id="pi-scalp"></div></div>
+  <p class="piede">Il punteggio va da 0 a 100 ed è la posizione dell’azione nella classifica di oggi: 100 è la più favorevole. Unisce la previsione a sei mesi (70%) e quella a una–quattro settimane (30%). Forti significa 70 o più, deboli sotto 30.</p>
 </section>
-</main>
-
-<nav id="nav">
-  <button data-s="oggi" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-8 9 8M5 10v10h14V10"/></svg>Oggi</button>
-  <button data-s="piano"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5c0-1.2 1.1-2 2.5-2s2.5.8 2.5 2-1.1 1.7-2.5 2-2.5.8-2.5 2 1.1 2 2.5 2 2.5-.8 2.5-2"/></svg>Piano</button>
-  <button data-s="segnali"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg>Segnali</button>
-  <button data-s="port"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>Portafoglio</button>
-  <button data-s="cerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Cerca</button>
-  <button data-s="aff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>Affidabilità</button>
-</nav>
+</div>
 
 <script>
 const D = __DATI__;
 const $ = s => document.querySelector(s);
-const fmt = (x, d=2) => (x==null || !isFinite(x)) ? '–' : Number(x).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});
-const pct = (x, d=1) => (x==null || !isFinite(x)) ? '–' : (x>0?'+':'') + fmt(x*100, d) + '%';
-const cls = x => x>0 ? 'up' : (x<0 ? 'dn' : '');
+const nf = (x, d=2) => (x==null || !isFinite(x)) ? '–' : Number(x).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});
+const eur = (x, d=2) => (x==null || !isFinite(x)) ? '–' : nf(x, d) + ' €';
+const pct = (x, d=1) => (x==null || !isFinite(x)) ? '–' : (x>0?'+':'') + nf(x*100, d) + '%';
+const cls = x => x>0 ? 'su' : (x<0 ? 'giu' : '');
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const pctc = (x, d=1) => pct(x, d).replace('+','');
-const valuta = v => v==='GBp' ? 'GBp' : (v||'');
+const cur = v => v==='EUR' ? '€' : (v==='GBp' ? 'GBp' : (v||''));
+const px = (x, v) => nf(x) + ' ' + cur(v);
+const sig = t => esc(t.replace(/[-.].*$/,'').slice(0,4));
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v==null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
 
-// indice di tutti i titoli
-const IDX = {};
-D.tutti.forEach(r => IDX[r[0]] = {t:r[0], n:r[1], b:r[2], c:r[3], s:r[4], l:r[5], atr:r[6], m60:r[7], r21:r[8], r252:r[9], rsi:r[10], v:r[11]});
+// ---- dati ----
+const A = D.tutti.map(r => ({t:r[0], n:r[1], b:r[2], v:r[3], c:r[4], pe:r[5], p:r[6], r21:r[7], r252:r[8],
+  trend:!!r[9], atr:r[10], m60:r[11], stop:r[12], mot:r[13], dup:!!r[14]}));
+const IDX = {}; A.forEach(r => IDX[r.t] = r);
+const C = D.costi;
+const comm = b => (C.comm[b] ?? C.comm_altre) + C.gestione;
+const costoAcq = (r, imp) => comm(r.b) + (r.v!=='EUR' ? imp*C.autofx : 0) + imp*(C.ftt[r.b]||0);
+const costoAR = (r, imp) => 2*comm(r.b) + (r.v!=='EUR' ? 2*imp*C.autofx : 0) + imp*(C.ftt[r.b]||0);
+const colP = p => p>=70 ? 'var(--segnale)' : p>=30 ? 'var(--testo2)' : 'var(--vendi)';
+const punti = p => `<div class="punti"><b style="color:${colP(p)}">${nf(p,0)}</b><i><u style="width:${Math.max(4,p)}%;background:${colP(p)}"></u></i></div>`;
+const giud = p => p>=90?'molto forte':p>=70?'forte':p>=30?'nella media':p>=10?'debole':'molto debole';
 
-$('#sub').textContent = `Dati di chiusura del ${new Date(D.data).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} · ${D.tutti.length.toLocaleString('it-IT')} titoli analizzati`;
+const oggiD = new Date(D.data);
+const meseKey = new Date().toISOString().slice(0,7);
+const nomeMese = new Date().toLocaleDateString('it-IT',{month:'long'});
+$('#sub').textContent = `${A.length.toLocaleString('it-IT')} azioni DEGIRO studiate ogni sera`;
+$('#v-data').textContent = `Chiusura di ${oggiD.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})}`;
 if (D.demo) $('#demo').style.display = 'block';
 
-// navigazione
-document.querySelectorAll('#nav button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('#nav button').forEach(x => x.classList.toggle('on', x===b));
-  document.querySelectorAll('.sez').forEach(s => s.classList.toggle('on', s.id === 's-' + b.dataset.s));
-  window.scrollTo(0,0);
+document.querySelectorAll('#schede button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#schede button').forEach(x => x.classList.toggle('on', x===b));
+  document.querySelectorAll('.vista').forEach(v => v.classList.toggle('on', v.id === 'v-' + b.dataset.v));
+  window.scrollTo({top:0});
 });
 
-// sparkline
-function spark(arr){
-  if (!arr || arr.length < 2) return '';
-  const w=84,h=30,mn=Math.min(...arr),mx=Math.max(...arr),rg=(mx-mn)||1;
-  const pts = arr.map((v,i)=>`${(i/(arr.length-1)*w).toFixed(1)},${(h-2-(v-mn)/rg*(h-4)).toFixed(1)}`).join(' ');
-  const col = arr[arr.length-1] >= arr[0] ? 'var(--buy)' : 'var(--sell)';
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-label="andamento 90 giorni"><polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
-}
+// ---- stato salvato ----
+const KP = 'radar-azioni-portafoglio', KA = 'radar-azioni-acquisti', KB = 'radar-azioni-budget',
+      KC = 'radar-azioni-cassa', KV = 'radar-azioni-vendite';
+let P = store.get(KP, []), LOG = store.get(KA, []), BUDGET = store.get(KB, 100);
+let CASSA = +store.get(KC, 0) || 0;     // soldi delle vendite reinvestiti, non scadono a fine mese
+let VEND = store.get(KV, []);           // [{d,t,q,incasso,guadagno,scelta,reinv}]
+const salvaP = () => store.set(KP, P), salvaLog = () => store.set(KA, LOG);
+const salvaCassa = () => store.set(KC, +CASSA.toFixed(2)), salvaVend = () => store.set(KV, VEND);
+const spesoMese = () => LOG.filter(x => (x.d||'').slice(0,7) === meseKey).reduce((s,x) => s + (+x.eur||0), 0);
+const oggiISO = () => new Date().toISOString().slice(0,10);
 
-function itemHTML(r, tipo, o){
-  const b = tipo==='acquisti' ? '<span class="badge b-buy">▲ COMPRA</span>' : '<span class="badge b-sell">▼ VENDI / EVITA</span>';
-  let lv = `<span>Prezzo <b>${fmt(r.c)} ${valuta(r.v)}</b></span>`;
-  if (tipo==='acquisti' && r.stop) lv += `<span>Stop <b>${fmt(r.stop)}</b> (${pct(r.stop/r.c-1)})</span>`;
-  if (tipo==='acquisti' && r.tgt) lv += `<span>Obiettivo <b>${fmt(r.tgt)}</b> (${pct(r.tgt/r.c-1)})</span>`;
-  lv += `<span>1 mese <b class="${cls(r.r21)}">${pct(r.r21)}</b></span><span>12 mesi <b class="${cls(r.r252)}">${pct(r.r252)}</b></span><span>RSI <b>${fmt(r.rsi,0)}</b></span>`;
-  if (r.cp != null) {
-    let c = `<span>Costi DEGIRO <b>${pctc(r.cp,1)}</b> andata+ritorno su ${fmt(r.imp,0)} € (1 azione ≈ ${fmt(r.pe,0)} €)</span>`;
-    if (tipo==='acquisti' && r.tgt) c += `<span>Obiettivo al netto dei costi <b class="${cls(r.tgt/r.c-1-r.cp)}">${pct(r.tgt/r.c-1-r.cp)}</b></span>`;
-    lv += c;
+// ---- mercato ----
+const amp = D.regime.ampiezza200 ?? 0.5;
+const umore = amp > .6 ? ['Mercato in salute','var(--segnale)'] : amp > .4 ? ['Mercato misto','var(--oro)'] : ['Mercato debole','var(--vendi)'];
+$('#umore').textContent = umore[0]; $('#umore').style.color = umore[1];
+$('#umore').title = `${nf(amp*100,0)}% delle azioni è sopra la media a 200 giorni`;
+$('#b-tot').value = BUDGET;
+$('#b-tot').onchange = e => { const v = +e.target.value; if (v >= 10) { BUDGET = v; store.set(KB, v); disegna(); } };
+
+// ---- logica ----
+function candidati(resto){
+  const posseduti = new Set(P.map(x => x.t)), out = [];
+  for (const r of A) {
+    if (r.p < 90 || !r.trend || r.dup || posseduti.has(r.t) || !(r.pe > 0)) continue;
+    const q = Math.floor((resto - 3) / r.pe);
+    if (q < 1) continue;
+    const imp = q * r.pe;
+    if (imp < Math.min(40, resto*0.5)) continue;
+    const car = costoAR(r, imp) / imp;
+    if (car > 0.07) continue;
+    out.push({...r, q, imp, ca: costoAcq(r, imp), car, rank: r.p - 100*car});
   }
-  return `<div class="item">
-    <div><div><span class="tk">${esc(r.t)}</span> ${b}</div><div class="nm">${esc(r.n)} · ${esc(r.b)}</div></div>
-    <div class="right">${spark(r.sp)}<div class="small">punteggio <span class="pct">${fmt(r.p,0)}</span>/100</div></div>
-    <div class="lv">${lv}</div>
-    <div class="why">${esc(r.mot)}</div></div>`;
+  return out.sort((a,b) => b.rank - a.rank);
+}
+function valuta(pos){
+  const r = IDX[pos.t];
+  if (!r) return {stato:'?', r:null, txt:'Non presente nell’analisi di oggi: controlla il simbolo.'};
+  const k = D.stop_k, stop = Math.max(pos.pr - k*r.atr, (r.m60||0) - k*r.atr), pnl = r.c/pos.pr - 1;
+  if (r.c < stop) return {stato:'vendi', r, stop, pnl, txt:`È sceso sotto il livello di protezione (${px(stop, r.v)}).`};
+  if (r.p < 10)  return {stato:'vendi', r, stop, pnl, txt:`Ora è tra le azioni più deboli del mercato (punteggio ${nf(r.p,0)}).`};
+  return {stato:'tieni', r, stop, pnl, txt: r.p >= 70 ? 'Ancora tra le azioni forti: si tiene.' : 'Nessun motivo per vendere: si tiene.'};
+}
+function decidi(){
+  const speso = spesoMese(), restoMese = Math.max(0, BUDGET - speso), resto = restoMese + CASSA;
+  const vendite = P.map((pos,i) => ({pos, i, g:valuta(pos)})).filter(x => x.g.stato==='vendi');
+  let compra = null, perche = '';
+  if (resto < 30) perche = `Il budget di ${nomeMese} è già investito${CASSA>0?' (restano '+eur(CASSA,0)+' da vendite, troppo pochi per un ordine)':''}. Il prossimo acquisto il mese prossimo.`;
+  else if (amp < 0.3) perche = 'Il mercato è debole: meno di un’azione su tre è in tendenza positiva. Meglio aspettare, il budget resta lì.';
+  else {
+    const L = candidati(resto);
+    if (L.length) compra = L;
+    else perche = `Nessuna azione abbastanza forte si può comprare con ${eur(resto,0)} senza commissioni troppo alte. Il budget resta lì.`;
+  }
+  return {speso, resto, restoMese, vendite, compra, perche};
 }
 
-// OGGI
-(function(){
-  const g = D.regime;
-  const amp = g.ampiezza200, mr = g.mercato_r21, mv = g.mercato_vol21;
-  $('#regime').innerHTML = `
-    <div class="kpi"><div class="v">${fmt(amp*100,0)}%</div><div class="l">titoli sopra la media a 200 giorni</div></div>
-    <div class="kpi"><div class="v ${cls(mr)}">${pct(mr)}</div><div class="l">rendimento mediano ultimo mese</div></div>
-    <div class="kpi"><div class="v">${fmt(mv*100,0)}%</div><div class="l">volatilità mediana (annua)</div></div>`;
-  let t = amp > .6 ? 'Mercato in salute: la maggior parte dei titoli è in trend rialzista.' :
-          amp > .4 ? 'Mercato misto: selezione importante, meglio posizioni più piccole.' :
-          'Mercato debole: pochi titoli in trend, prudenza e stop stretti.';
-  if (mv > .35) t += ' Volatilità alta: riduci le dimensioni delle posizioni.';
-  $('#regime-txt').textContent = t;
-  ['swing','lungo'].forEach(o => {
-    const L = D.liste[o].acquisti.slice(0,5);
-    $('#top-'+o).innerHTML = L.length ? L.map(r => itemHTML(r,'acquisti',o)).join('') : '<p class="note">Nessun titolo supera i filtri oggi.</p>';
+// ---- radar ----
+function hash(s){ let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return (h >>> 0) / 4294967295; }
+function radar(stato){
+  const svg = $('#radar-svg'), N = 140;
+  const top = A.filter(r => !r.dup).sort((a,b) => b.p - a.p).slice(0, N);
+  const miei = new Set(P.map(x => x.t)), scelta = stato.compra ? stato.compra[0].t : null;
+  const vis = new Map(top.map((r,i) => [r.t, i]));
+  P.forEach(x => { if (IDX[x.t] && !vis.has(x.t)) { top.push(IDX[x.t]); vis.set(x.t, N + 20); } });
+  const anelli = [[30,'top 10'],[60,'top 50'],[90,`top ${N}`]];
+  let h = `<defs><radialGradient id="rg"><stop offset="0" stop-color="#4fd1a5" stop-opacity=".10"/><stop offset="1" stop-color="#4fd1a5" stop-opacity="0"/></radialGradient></defs>
+    <circle r="96" fill="url(#rg)"/>`;
+  anelli.forEach(([r,l]) => h += `<circle r="${r}" fill="none" stroke="#4fd1a5" stroke-opacity=".18" stroke-width=".6"/>
+    <text x="${(r*.7071+2).toFixed(1)}" y="${(-r*.7071-2).toFixed(1)}" font-size="5.2" fill="#61758c" font-family="Manrope,-apple-system,Segoe UI,Roboto,sans-serif">${l}</text>`);
+  h += `<line x1="-96" x2="96" y1="0" y2="0" stroke="#4fd1a5" stroke-opacity=".1" stroke-width=".5"/><line y1="-96" y2="96" x1="0" x2="0" stroke="#4fd1a5" stroke-opacity=".1" stroke-width=".5"/>`;
+  const raggio = i => i < 10 ? 6 + 22*(i/10) : i < 50 ? 32 + 26*((i-10)/40) : i < N ? 62 + 26*((i-50)/(N-50)) : 93;
+  const pallini = [];
+  top.forEach(r => {
+    const i = vis.get(r.t), rr = raggio(i), a = hash(r.t) * Math.PI * 2;
+    const x = (Math.cos(a)*rr).toFixed(1), y = (Math.sin(a)*rr).toFixed(1);
+    const sc = r.t === scelta, mio = miei.has(r.t);
+    let s = '';
+    if (sc) s = `<circle cx="${x}" cy="${y}" r="7" fill="#f2c46d" fill-opacity=".18"><animate attributeName="r" values="4;9;4" dur="2.4s" repeatCount="indefinite"/></circle>
+      <circle class="blip" data-t="${esc(r.t)}" cx="${x}" cy="${y}" r="3.4" fill="#f2c46d"/>
+      <text x="${(+x+6).toFixed(1)}" y="${(+y+2).toFixed(1)}" font-size="7" font-weight="800" fill="#f2c46d" font-family="Manrope,-apple-system,Segoe UI,Roboto,sans-serif">${esc(r.t)}</text>`;
+    else if (mio) s = `<circle class="blip" data-t="${esc(r.t)}" cx="${x}" cy="${y}" r="3.2" fill="none" stroke="${r.p<10?'#ff8a65':'#e9eef4'}" stroke-width="1.2"/>`;
+    else s = `<circle class="blip" data-t="${esc(r.t)}" cx="${x}" cy="${y}" r="${(1.3 + 1.4*(1-rr/96)).toFixed(2)}" fill="#4fd1a5" fill-opacity="${(.35 + .55*(1-rr/96)).toFixed(2)}"/>`;
+    pallini.push([sc ? 2 : mio ? 1 : 0, s]);
   });
-})();
-
-// SEGNALI
-let selO='swing', selK='acquisti';
-function renderLista(){
-  const L = D.liste[selO][selK];
-  const intro = selK==='acquisti'
-    ? `<p class="note">I ${L.length} titoli con il punteggio più alto (${esc(D.orizzonti[selO])}), massimo pochi per borsa per diversificare. Lo stop è calcolato sulla volatilità (ATR).</p>`
-    : `<p class="note">I titoli con il punteggio più basso: se li possiedi valuta di venderli, altrimenti evitali. (Su DEGIRO la vendita allo scoperto non è disponibile per tutti.)</p>`;
-  $('#lista').innerHTML = intro + L.map(r => itemHTML(r, selK, selO)).join('');
+  h += pallini.sort((a,b) => a[0]-b[0]).map(x => x[1]).join('') + `<circle r="2" fill="#4fd1a5"/>`;
+  svg.innerHTML = h;
+  const tip = $('#radar-tip'), box = $('#radar');
+  svg.querySelectorAll('.blip').forEach(c => {
+    const mostra = () => { const r = IDX[c.dataset.t], bb = c.getBoundingClientRect(), rb = box.getBoundingClientRect();
+      tip.innerHTML = `<b>${esc(r.t)}</b> · ${esc(r.n)}<br>Punteggio ${nf(r.p,0)} · 12 mesi <span class="${cls(r.r252)}">${pct(r.r252,0)}</span>`;
+      tip.style.left = (bb.left - rb.left + bb.width/2) + 'px'; tip.style.top = (bb.top - rb.top) + 'px'; tip.style.display = 'block'; };
+    c.addEventListener('mouseenter', mostra); c.addEventListener('click', mostra);
+    c.addEventListener('mouseleave', () => tip.style.display = 'none');
+  });
 }
-document.querySelectorAll('#seg-or button').forEach(b => b.onclick = () => { selO=b.dataset.o; document.querySelectorAll('#seg-or button').forEach(x=>x.classList.toggle('on',x===b)); renderLista(); });
-document.querySelectorAll('#seg-tipo button').forEach(b => b.onclick = () => { selK=b.dataset.k; document.querySelectorAll('#seg-tipo button').forEach(x=>x.classList.toggle('on',x===b)); renderLista(); });
-renderLista();
 
-// PORTAFOGLIO
-const KEY='radar-azioni-portafoglio';
-let P = [];
-try { P = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { P = []; }
-const salva = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch(e) {} };
-$('#dl').innerHTML = D.tutti.map(r => `<option value="${esc(r[0])}">${esc(r[1])}</option>`).join('');
-function trovaTicker(s){
+// ---- grafico prezzo ----
+function grafico(arr, stop){
+  if (!arr || arr.length < 2) return '';
+  const W = 600, H = 150, pad = 6;
+  const vals = stop ? arr.concat([stop]) : arr;
+  const mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
+  const X = i => pad + i/(arr.length-1)*(W-2*pad), Y = v => H - 18 - (v-mn)/rg*(H-34);
+  const linea = arr.map((v,i) => `${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  const su = arr[arr.length-1] >= arr[0], col = su ? '#4fd1a5' : '#ff8a65';
+  let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Prezzo degli ultimi tre mesi">
+    <defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <polygon points="${X(0)},${H} ${linea} ${X(arr.length-1)},${H}" fill="url(#ga)"/>
+    <polyline points="${linea}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+  if (stop) s += `<line x1="0" x2="${W}" y1="${Y(stop).toFixed(1)}" y2="${Y(stop).toFixed(1)}" stroke="#ff8a65" stroke-opacity=".55" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"/>`;
+  s += `<circle cx="${X(arr.length-1).toFixed(1)}" cy="${Y(arr[arr.length-1]).toFixed(1)}" r="4" fill="${col}"/></svg>`;
+  return s;
+}
+
+// ---- disegno OGGI ----
+function disegnaHero(st){
+  $('#b-res').innerHTML = `${eur(st.resto,0)} <small>disponibili a ${nomeMese}</small>`;
+  $('#b-txt').textContent = (st.speso > 0 ? `Investiti ${eur(st.speso,0)} su ${eur(BUDGET,0)}` : 'Ancora nessun acquisto questo mese') +
+    (CASSA >= 1 ? `, più ${eur(CASSA,0)} da vendite reinvestite` : '');
+  $('#b-bar').style.width = Math.min(100, st.speso/BUDGET*100) + '%';
+  const nv = st.vendite.length, c = st.compra && st.compra[0];
+  let t, s;
+  if (c && nv) { t = `Compra <span class="tk">${esc(c.t)}</span>, vendi ${nv===1 ? esc(st.vendite[0].pos.t) : nv + ' titoli'}`; s = 'Prima vendi, poi compra: trovi i dettagli qui sotto.'; }
+  else if (c) { t = `Oggi compra <span class="tk">${c.q} ${esc(c.t)}</span>`; s = `${esc(c.n)}: è tra le azioni più forti di oggi e rientra nel budget. Un solo ordine, poi si tiene.`; }
+  else if (nv) { t = `Oggi vendi ${nv===1 ? esc(st.vendite[0].pos.t) : nv + ' titoli'}`; s = 'Non c’è niente da comprare oggi. ' + st.vendite[0].g.txt; }
+  else { t = 'Oggi non serve fare nulla'; s = st.perche + (P.length ? ' I tuoi titoli vanno tenuti.' : ''); }
+  $('#v-titolo').innerHTML = t; $('#v-spiega').textContent = s.replace(/<[^>]+>/g,'');
+}
+
+function disegnaCompra(st){
+  const el = $('#c-compra');
+  if (!st.compra) {
+    el.innerHTML = `<div class="blocco-h"><h3>Da comprare</h3></div><div class="vuoto"><b>Oggi niente</b>${esc(st.perche)}</div>`;
+    return;
+  }
+  const r = st.compra[0];
+  let h = `<div class="blocco-h"><h3>Da comprare oggi</h3><span>punteggio ${nf(r.p,0)} su 100</span></div>
+  <div class="scelta">
+    <div class="scelta-top">
+      <div class="sigla"><div class="mono">${sig(r.t)}</div><div><b>${esc(r.t)}</b><span>${esc(r.n)} · ${esc(r.b)}</span></div></div>
+      <div class="prezzo"><b>${px(r.c, r.v)}</b><span class="${cls(r.r21)}">${pct(r.r21)} in un mese</span></div>
+    </div>
+    <div class="grafico">${grafico(D.storia[r.t], r.stop)}</div>
+    <div class="dati">
+      <div><small>Quante</small><b>${r.q} ${r.q===1?'azione':'azioni'}</b></div>
+      <div><small>Spesa</small><b>${eur(r.imp,0)}</b></div>
+      <div><small>Commissioni</small><b>${eur(r.ca)}</b></div>
+      <div><small>Ultimi 12 mesi</small><b class="${cls(r.r252)}">${pct(r.r252,0)}</b></div>
+      <div><small>Vendi se scende sotto</small><b>${px(r.stop, r.v)}</b></div>
+      <div><small>Distanza</small><b>${pct(r.stop/r.c-1,0)}</b></div>
+    </div>
+    ${r.mot ? `<p class="motivo"><b>Perché</b> ${esc(r.mot)}.</p>` : ''}
+    <p class="motivo">La linea tratteggiata nel grafico è il livello di protezione: se il prezzo ci finisce sotto, il Radar ti dirà di vendere.</p>
+    <div class="azioni" id="buy-form"><button class="btn" id="buy-open">Ho comprato ${esc(r.t)}</button></div>
+  </div>`;
+  if (st.compra.length > 1) {
+    h += `<div class="blocco-h" style="padding-top:8px"><h3 style="font-size:14px;color:var(--testo2)">In alternativa</h3></div>` +
+      st.compra.slice(1,3).map(a => `<div class="riga"><div class="mono">${sig(a.t)}</div><div class="nome"><b>${esc(a.t)}</b><span>${esc(a.n)}</span></div>
+      <div class="num">${a.q} × ${px(a.c, a.v)}<span class="ink">${eur(a.imp,0)}</span></div>${punti(a.p)}</div>`).join('');
+  }
+  el.innerHTML = h;
+  $('#buy-open').onclick = () => {
+    $('#buy-form').innerHTML = `<label class="campo">Quantità<input id="bq" type="number" inputmode="decimal" value="${r.q}"></label>
+      <label class="campo">Prezzo pagato (${cur(r.v)})<input id="bp" type="number" inputmode="decimal" step="any" value="${+r.c.toFixed(4)}"></label>
+      <button class="btn" id="b-ok">Salva acquisto</button><button class="btn vuoto-b" id="b-no">Annulla</button>`;
+    $('#b-no').onclick = disegna;
+    $('#b-ok').onclick = () => {
+      const q = +$('#bq').value, pr = +$('#bp').value;
+      if (!(q > 0 && pr > 0)) return;
+      const spesa = q * pr * (r.pe / r.c) + costoAcq(r, q * r.pe);
+      P.push({t:r.t, q, pr, d:oggiISO()}); salvaP();
+      const dalMese = Math.min(spesa, Math.max(0, BUDGET - spesoMese()));
+      LOG.push({d:oggiISO(), eur:+dalMese.toFixed(2), t:r.t}); salvaLog();
+      if (spesa > dalMese) { CASSA = Math.max(0, CASSA - (spesa - dalMese)); salvaCassa(); }
+      disegna();
+    };
+  };
+}
+
+function disegnaVendi(st){
+  const el = $('#c-vendi');
+  if (!st.vendite.length) {
+    el.innerHTML = `<div class="blocco-h"><h3>Da vendere</h3></div><div class="vuoto"><b>Oggi niente</b>${P.length ? 'Nessuno dei tuoi titoli ha dato segnale di uscita.' : 'Quando avrai dei titoli, qui comparirà solo quello da vendere, e solo se serve.'}</div>`;
+    return;
+  }
+  el.innerHTML = `<div class="blocco-h"><h3>Da vendere oggi</h3><span>${st.vendite.length} ${st.vendite.length===1?'titolo':'titoli'}</span></div>` +
+    st.vendite.map(({pos,i,g}) => {
+      const r = g.r, gain = (r.c - pos.pr) * pos.q * (r.pe / r.c), tasse = gain > 0 ? gain * C.tassa : 0;
+      return `<div class="scelta" style="border-top:1px solid rgba(255,255,255,.05)">
+        <div class="scelta-top"><div class="sigla"><div class="mono" style="background:var(--vendi-f);color:var(--vendi);border-color:rgba(255,138,101,.3)">${sig(pos.t)}</div>
+        <div><b>Vendi ${pos.q} ${esc(pos.t)}</b><span>${esc(r.n)}</span></div></div>
+        <div class="prezzo"><b>${px(r.c, r.v)}</b><span class="${cls(g.pnl)}">${pct(g.pnl)} dal tuo acquisto</span></div></div>
+        <p class="motivo" style="margin-top:12px">${g.txt}${tasse>0 ? ` Tasse stimate sul guadagno: ${eur(tasse)}.` : ''}</p>
+        <div class="azioni"><button class="btn rosso sm" data-sold="${i}">Ho venduto ${esc(pos.t)}</button></div></div>`;
+    }).join('');
+  el.querySelectorAll('[data-sold]').forEach(b => b.onclick = () => apriVendita(+b.dataset.sold, b.parentElement));
+}
+
+function disegnaPort(){
+  if (!P.length) { $('#port').innerHTML = '<div class="vuoto">Quando compri con il Radar il titolo compare qui da solo. Puoi anche aggiungere quelli che hai già.</div>'; $('#p-tot').textContent=''; disegnaIncassi(); return; }
+  let val=0, inv=0;
+  $('#port').innerHTML = P.map((pos,i) => {
+    const g = valuta(pos), r = g.r;
+    if (r) { val += r.c*pos.q*(r.pe/r.c); inv += pos.pr*pos.q*(r.pe/r.c); }
+    const et = g.stato==='vendi' ? '<span class="etich e-vendi">Vendi</span>' : g.stato==='tieni' ? '<span class="etich e-tieni">Tieni</span>' : '<span class="etich e-dubbio">?</span>';
+    return `<div class="riga click" data-i="${i}"><div class="mono">${sig(pos.t)}</div>
+      <div class="nome"><b>${esc(pos.t)}${et}</b><span>${r ? esc(r.n) : esc(g.txt)}</span></div>
+      <div class="num">${r ? `${pos.q} × ${px(r.c, r.v)}<span class="${cls(g.pnl)}">${pct(g.pnl)}</span>` : ''}</div>${r ? punti(r.p) : '<div></div>'}</div>
+      <div class="dett" id="pd-${i}"><div class="kv"><span>Carico <b>${px(pos.pr, r?.v)}</b></span>${r?`<span>Vendi sotto <b>${px(g.stop, r.v)}</b></span><span>12 mesi <b>${pct(r.r252,0)}</b></span>`:''}${pos.d?`<span>Dal <b>${new Date(pos.d).toLocaleDateString('it-IT')}</b></span>`:''}</div>
+      <p style="margin:8px 0">${esc(g.txt)}</p><div class="azioni" style="margin-top:8px">${r ? `<button class="btn vuoto-b sm" data-vendo="${i}">Ho venduto</button>` : ''}<button class="btn vuoto-b sm" data-del="${i}">Rimuovi</button></div></div>`;
+  }).join('');
+  $('#p-tot').innerHTML = inv ? `${eur(val,0)} · <span class="${cls(val/inv-1)}">${pct(val/inv-1)}</span>` : '';
+  disegnaIncassi();
+  $('#port').querySelectorAll('.riga.click').forEach(row => row.onclick = () => $('#pd-'+row.dataset.i).classList.toggle('on'));
+  $('#port').querySelectorAll('[data-vendo]').forEach(b => b.onclick = e => { e.stopPropagation(); apriVendita(+b.dataset.vendo, b.parentElement); });
+  $('#port').querySelectorAll('[data-del]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    if (b.dataset.conf) { P.splice(+b.dataset.del,1); salvaP(); disegna(); }
+    else { b.dataset.conf = 1; b.textContent = 'Conferma rimozione'; }
+  });
+}
+
+$('#dl').innerHTML = A.map(r => `<option value="${esc(r.t)}">${esc(r.n)}</option>`).join('');
+function trova(s){
   s = s.trim(); if (!s) return null;
   if (IDX[s]) return s; if (IDX[s.toUpperCase()]) return s.toUpperCase();
   const low = s.toLowerCase();
-  const m = D.tutti.find(r => r[1].toLowerCase().startsWith(low)) || D.tutti.find(r => r[1].toLowerCase().includes(low));
-  return m ? m[0] : s.toUpperCase();
+  const m = A.find(r => r.n.toLowerCase().startsWith(low)) || A.find(r => r.n.toLowerCase().includes(low));
+  return m ? m.t : s.toUpperCase();
 }
-function giudizio(pos){
-  const r = IDX[pos.t];
-  if (!r) return {b:'<span class="badge b-warn">? NON ANALIZZATO</span>', txt:'Titolo non presente oggi nell’analisi (ticker diverso, poco liquido o dati mancanti). Controlla il simbolo in “Cerca”.'};
-  const o = pos.o, p = o==='swing' ? r.s : r.l;
-  const k = o==='swing' ? D.param.swing_stop : D.param.lungo_stop;
-  const stop = Math.max(pos.pr - k*r.atr, (r.m60||0) - k*r.atr);
-  const pnl = r.c/pos.pr - 1;
-  let b, txt;
-  if (r.c < stop) { b='<span class="badge b-sell">▼ VENDI</span>'; txt=`Prezzo sotto lo stop dinamico (${fmt(stop)}).`; }
-  else if (p < 20) { b='<span class="badge b-sell">▼ VENDI</span>'; txt=`Punteggio molto debole (${fmt(p,0)}/100).`; }
-  else if (o==='swing' && r.c >= pos.pr + D.param.swing_tgt*r.atr) { b='<span class="badge b-warn">◆ PRENDI PROFITTO</span>'; txt='Obiettivo swing raggiunto: valuta di vendere almeno metà e alzare lo stop.'; }
-  else if (p < 40) { b='<span class="badge b-warn">◆ ALLEGGERISCI</span>'; txt=`Punteggio sotto la media (${fmt(p,0)}/100): il titolo sta perdendo forza.`; }
-  else if (p >= 80) { b='<span class="badge b-buy">▲ TIENI / INCREMENTA</span>'; txt=`Tra i più forti del mercato (${fmt(p,0)}/100).`; }
-  else { b='<span class="badge b-hold">● TIENI</span>'; txt=`Punteggio nella norma (${fmt(p,0)}/100).`; }
-  return {b, txt, r, stop, pnl};
-}
-function renderPort(){
-  if (!P.length) { $('#port').innerHTML = '<p class="note">Nessun titolo inserito. Aggiungi le tue posizioni DEGIRO qui sopra.</p>'; return; }
-  let tot=0, inv=0;
-  const h = P.map((pos,i) => {
-    const g = giudizio(pos), r = g.r;
-    if (r && pos.q) { tot += r.c*pos.q; inv += pos.pr*pos.q; }
-    return `<div class="item">
-      <div><div><span class="tk">${esc(pos.t)}</span> ${g.b}</div><div class="nm">${r?esc(r.n)+' · ':''}${pos.o==='swing'?'Swing':'Medio-lungo'}</div></div>
-      <div class="right"><button class="del" data-i="${i}" aria-label="rimuovi">×</button></div>
-      <div class="lv">${r?`<span>Prezzo <b>${fmt(r.c)}</b></span><span>Carico <b>${fmt(pos.pr)}</b></span><span>Risultato <b class="${cls(g.pnl)}">${pct(g.pnl)}</b></span><span>Stop <b>${fmt(g.stop)}</b></span>`:''}</div>
-      <div class="why">${g.txt}</div></div>`;
-  }).join('');
-  const sum = inv ? `<div class="grid" style="margin-bottom:6px"><div class="kpi"><div class="v">${fmt(tot,0)}</div><div class="l">valore (valute miste)</div></div><div class="kpi"><div class="v ${cls(tot/inv-1)}">${pct(tot/inv-1)}</div><div class="l">risultato complessivo</div></div></div>` : '';
-  $('#port').innerHTML = sum + h;
-  document.querySelectorAll('#port .del').forEach(b => b.onclick = () => { P.splice(+b.dataset.i,1); salva(); renderPort(); });
-}
-$('#p-add').onclick = () => {
-  const t = trovaTicker($('#p-t').value), q = parseFloat($('#p-q').value), pr = parseFloat($('#p-pr').value);
-  if (!t || !(pr>0)) { $('#p-msg').textContent = 'Inserisci almeno titolo e prezzo di carico.'; return; }
-  P.push({t, q: isFinite(q)?q:0, pr, o: $('#p-o').value}); salva(); renderPort();
-  $('#p-t').value=''; $('#p-q').value=''; $('#p-pr').value=''; $('#p-msg').textContent='';
+$('#a-ok').onclick = () => {
+  const t = trova($('#a-t').value), q = +$('#a-q').value, pr = +$('#a-p').value;
+  if (!t || !(q > 0) || !(pr > 0)) { $('#a-msg').textContent = 'Inserisci titolo, quantità e prezzo di carico.'; return; }
+  P.push({t, q, pr, d:oggiISO()}); salvaP();
+  $('#a-t').value = $('#a-q').value = $('#a-p').value = '';
+  $('#a-msg').textContent = IDX[t] ? `${t} aggiunto.` : `${t} aggiunto, ma non è tra le azioni studiate oggi: controlla il simbolo.`;
+  disegna();
 };
-$('#p-exp').onclick = async () => {
-  const code = btoa(unescape(encodeURIComponent(JSON.stringify(P))));
-  try { await navigator.clipboard.writeText(code); $('#p-msg').textContent = 'Codice copiato: incollalo sull’altro dispositivo con “Incolla codice”.'; }
-  catch(e) { $('#p-msg').textContent = 'Copia questo codice: ' + code; }
-};
-$('#p-imp').onclick = () => {
-  const c = prompt('Incolla il codice del portafoglio'); if (!c) return;
-  try { P = JSON.parse(decodeURIComponent(escape(atob(c.trim())))); salva(); renderPort(); $('#p-msg').textContent='Portafoglio importato.'; }
-  catch(e) { $('#p-msg').textContent = 'Codice non valido.'; }
-};
-renderPort();
 
-// CERCA
-const borse = [...new Set(D.tutti.map(r=>r[2]))].sort();
-$('#f-borsa').innerHTML += borse.map(b=>`<option>${esc(b)}</option>`).join('');
-let sortC = 4, sortDir = -1;
-function renderTab(){
-  const q = $('#q').value.trim().toLowerCase(), fb = $('#f-borsa').value;
-  let R = D.tutti.filter(r => (!fb || r[2]===fb) && (!q || r[0].toLowerCase().includes(q) || r[1].toLowerCase().includes(q)));
-  R.sort((a,b) => { const x=a[sortC], y=b[sortC]; if (typeof x==='string') return sortDir*x.localeCompare(y); return sortDir*((x??-1e9)-(y??-1e9)); });
-  const n = R.length; R = R.slice(0, 300);
-  $('#tab tbody').innerHTML = R.map(r => `<tr><td><b>${esc(r[0])}</b><br><span class="small">${esc(r[1])}</span></td><td>${fmt(r[3])}</td><td><span class="pct">${fmt(r[4],0)}</span></td><td><span class="pct">${fmt(r[5],0)}</span></td><td class="${cls(r[8])}">${pct(r[8])}</td></tr>`).join('');
-  $('#tab-n').textContent = n > 300 ? `Mostrati 300 di ${n.toLocaleString('it-IT')} titoli: usa la ricerca per restringere.` : `${n} titoli. Punteggi da 0 a 100: più alto = più favorevole.`;
+function disegnaIncassi(){
+  const el = $('#incassi');
+  const tenuti = VEND.reduce((s,v) => s + (v.incasso - v.reinv), 0);
+  const guad = VEND.reduce((s,v) => s + v.guadagno, 0);
+  if (!VEND.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="incassi"><div><small>Guadagni realizzati</small><b class="${cls(guad)}">${guad>0?'+':''}${eur(guad)}</b></div>
+    <div><small>Soldi presi dal Radar</small><b>${eur(tenuti)}</b></div><div><small>Vendite</small><b>${VEND.length}</b></div></div>`;
 }
-$('#q').oninput = renderTab; $('#f-borsa').onchange = renderTab;
-document.querySelectorAll('#tab th').forEach(th => th.onclick = () => { const c=+th.dataset.c; sortDir = (sortC===c) ? -sortDir : (c===0?1:-1); sortC=c; renderTab(); });
-renderTab();
 
-// AFFIDABILITA'
-function barChart(serie){
-  if (!serie.length) return '';
-  const W=640,H=180,pad=28, n=serie.length, vals=serie.map(s=>s.extra);
-  const mx = Math.max(1, ...vals.map(Math.abs));
-  const y0 = H/2, bw = Math.max(2, (W-pad)/n - 2);
-  const bars = serie.map((s,i)=>{
-    const x = pad + i*((W-pad)/n), h = Math.abs(s.extra)/mx*(H/2-12), y = s.extra>=0 ? y0-h : y0;
-    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="${Math.min(2,bw/2)}" fill="${s.extra>=0?'var(--pos)':'var(--neg)'}" data-i="${i}"/>`;
-  }).join('');
-  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Rendimento extra degli acquisti per data">
-    <line x1="${pad}" x2="${W}" y1="${y0}" y2="${y0}" stroke="var(--line)"/>
-    <text x="0" y="14" font-size="16" fill="var(--muted)">+${fmt(mx,1)}%</text><text x="0" y="${H-4}" font-size="16" fill="var(--muted)">-${fmt(mx,1)}%</text>
-    ${bars}</svg><div class="tip"></div></div>`;
-}
-function bindTip(el, serie){
-  const tip = el.querySelector('.tip'), svg = el.querySelector('svg');
-  if (!svg) return;
-  const show = ev => {
-    const pt = ev.touches ? ev.touches[0] : ev; const rc = svg.getBoundingClientRect();
-    const i = Math.min(serie.length-1, Math.max(0, Math.floor((pt.clientX - rc.left - rc.width*28/640) / ((rc.width*(612/640))/serie.length))));
-    const s = serie[i]; if (!s) return;
-    tip.innerHTML = `<b>${new Date(s.d).toLocaleDateString('it-IT')}</b><br>Acquisti vs mercato: ${s.extra>0?'+':''}${fmt(s.extra,2)}%<br>Correlazione (IC): ${fmt(s.ic,3)}`;
-    tip.style.display='block'; tip.style.left = Math.min(rc.width-170, Math.max(0, pt.clientX-rc.left-80))+'px'; tip.style.top='0px';
+// ---- vendita con la domanda: reinvesto o prendo i guadagni? ----
+function apriVendita(i, dove){
+  const pos = P[i], r = IDX[pos.t];
+  if (!r) return;
+  const fx = r.pe / r.c;   // da valuta del titolo a euro
+  dove.outerHTML = `<div class="vendita" id="vf">
+    <div class="vf-campi">
+      <label class="campo">Azioni vendute<input id="vq" type="number" inputmode="decimal" value="${pos.q}" max="${pos.q}"></label>
+      <label class="campo">Prezzo di vendita (${cur(r.v)})<input id="vp" type="number" inputmode="decimal" step="any" value="${+r.c.toFixed(4)}"></label>
+    </div>
+    <div class="vf-conto" id="vconto"></div>
+    <p class="vf-dom">Cosa fai con i soldi?</p>
+    <div class="scelte" id="vscelte">
+      <label class="opz"><input type="radio" name="vs" value="tutto" checked><span><b>Reinvesto tutto</b><small id="vs-tutto"></small></span></label>
+      <label class="opz"><input type="radio" name="vs" value="capitale"><span><b>Reinvesto il capitale, tengo il guadagno</b><small id="vs-capitale"></small></span></label>
+      <label class="opz"><input type="radio" name="vs" value="niente"><span><b>Tengo tutto</b><small id="vs-niente"></small></span></label>
+    </div>
+    <div class="azioni"><button class="btn" id="v-ok">Conferma vendita</button><button class="btn vuoto-b" id="v-no">Annulla</button></div>
+  </div>`;
+  const conto = () => {
+    const q = Math.min(pos.q, Math.max(0, +$('#vq').value || 0)), pr = +$('#vp').value || 0;
+    const lordo = q * pr * fx, capitale = q * pos.pr * fx;
+    const costi = q > 0 ? comm(r.b) + (r.v!=='EUR' ? lordo*C.autofx : 0) : 0;
+    const plus = lordo - costi - capitale, tasse = plus > 0 ? plus * C.tassa : 0;
+    const incasso = Math.max(0, lordo - costi - tasse), guadagno = incasso - capitale;
+    $('#vconto').innerHTML = `<span>Incasso netto <b>${eur(incasso)}</b></span><span>Commissioni <b>${eur(costi)}</b></span>
+      <span>Tasse 26% <b>${eur(tasse)}</b></span><span>Guadagno netto <b class="${cls(guadagno)}">${guadagno>0?'+':''}${eur(guadagno)}</b></span>`;
+    const capR = Math.min(incasso, capitale);
+    $('#vs-tutto').textContent = `${eur(incasso)} tornano nel budget del Radar.`;
+    $('#vs-capitale').textContent = guadagno > 0 ? `${eur(capR)} tornano nel budget, ${eur(guadagno)} li tieni tu.`
+                                                 : `Sei in perdita: non c’è guadagno da tenere, tornano ${eur(incasso)}.`;
+    $('#vs-niente').textContent = `${eur(incasso)} escono dal Radar, il budget non cambia.`;
+    return {q, pr, incasso, guadagno, capR};
   };
-  svg.addEventListener('mousemove', show); svg.addEventListener('touchstart', show, {passive:true});
-  svg.addEventListener('mouseleave', ()=> tip.style.display='none');
+  $('#vq').oninput = $('#vp').oninput = conto; conto();
+  $('#v-no').onclick = disegna;
+  $('#v-ok').onclick = () => {
+    const c = conto(); if (!(c.q > 0 && c.pr > 0)) return;
+    const scelta = document.querySelector('input[name=vs]:checked').value;
+    const reinv = scelta === 'tutto' ? c.incasso : scelta === 'capitale' ? c.capR : 0;
+    CASSA += reinv; salvaCassa();
+    VEND.push({d:oggiISO(), t:pos.t, q:c.q, incasso:+c.incasso.toFixed(2), guadagno:+c.guadagno.toFixed(2), scelta, reinv:+reinv.toFixed(2)}); salvaVend();
+    if (c.q >= pos.q) P.splice(i, 1); else pos.q = +(pos.q - c.q).toFixed(6);
+    salvaP(); disegna();
+  };
 }
-(function(){
-  let h='';
-  ['swing','lungo'].forEach(o => {
-    const st = D.stat[o] || {}, tr = D.track[o] || {n:0};
-    h += `<div class="card"><h2>${esc(D.orizzonti[o])}</h2>`;
-    h += `<h3>Verifica sul passato (ultimo anno, dati mai visti dal modello)</h3>`;
-    if (st.val_ic_ml != null) {
-      h += `<div class="grid">
-        <div class="kpi"><div class="v ${cls(st.val_extra_top10)}">${pct(st.val_extra_top10,2)}</div><div class="l">extra-rendimento medio del miglior 10% vs media, per periodo</div></div>
-        <div class="kpi"><div class="v">${fmt(st.val_ic_ml,3)}</div><div class="l">IC modello ML</div></div>
-        <div class="kpi"><div class="v">${fmt(st.val_ic_regole,3)}</div><div class="l">IC regole tecniche</div></div>
-        <div class="kpi"><div class="v">${fmt((st.peso_ml||0)*100,0)}%</div><div class="l">peso dato al modello ML oggi</div></div></div>`;
-      if (st.feature_principali) h += `<p class="note">Indicatori che oggi contano di più: ${st.feature_principali.map(f=>esc(f.nome)).join(', ')}.</p>`;
-    } else h += `<p class="note">Storia insufficiente per la verifica.</p>`;
-    h += `<h3>Track record reale</h3>`;
-    if (tr.n > 0) {
-      h += `<div class="grid">
-        <div class="kpi"><div class="v">${tr.n}</div><div class="l">giorni verificati</div></div>
-        <div class="kpi"><div class="v ${cls(tr.rend_acquisti)}">${pct(tr.rend_acquisti,2)}</div><div class="l">rendimento medio lista acquisti</div></div>
-        <div class="kpi"><div class="v ${cls(tr.rend_universo)}">${pct(tr.rend_universo,2)}</div><div class="l">rendimento medio di tutto il mercato</div></div>
-        <div class="kpi"><div class="v">${fmt(tr.acquisti_battono_mediana*100,0)}%</div><div class="l">acquisti che hanno battuto il mercato</div></div>
-        <div class="kpi"><div class="v">${fmt(tr.ic_recente,3)}</div><div class="l">IC ultime 60 verifiche</div></div></div>
-        <h3>Acquisti meno mercato, per giorno di segnale</h3><div id="ch-${o}">${barChart(tr.serie)}</div>
-        <p class="note">Blu = la lista acquisti ha fatto meglio del mercato; arancio = peggio.</p>`;
-    } else {
-      h += `<p class="note">Ancora nessuna verifica: le prime arriveranno dopo ${o==='swing'?'circa 3 settimane':'circa 6 mesi'} di utilizzo quotidiano.</p>`;
-    }
-    h += `</div>`;
-  });
-  h += `<div class="card"><h3 style="margin-top:0">Come leggere questi numeri</h3><p class="note">L’IC (information coefficient) misura quanto la classifica di oggi anticipa la classifica dei rendimenti futuri: 0 = nessuna capacità, 0,03-0,05 è già un vantaggio utile, sopra 0,10 è raro e va guardato con sospetto. Un modello che va bene nel passato può smettere di funzionare: guarda soprattutto il track record reale.</p></div>`;
-  $('#aff').innerHTML = h;
-  ['swing','lungo'].forEach(o => { const el = document.getElementById('ch-'+o); if (el) bindTip(el, D.track[o].serie); });
-})();
 
-// PIANO
-const PK='radar-azioni-piano';
-try { const sv = JSON.parse(localStorage.getItem(PK)||'{}'); ['m','core','etf'].forEach(k => { if (sv[k]!=null) $('#pi-'+k).value = sv[k]; }); } catch(e) {}
-const C = D.costi;
-const commBorsa = b => (C.comm[b] ?? C.comm_altre) + C.gestione;
-const costoAR = (b, v, imp) => 2*commBorsa(b) + (v && v!=='EUR' ? 2*imp*C.autofx : 0) + imp*(C.ftt[b]||0);
-function simula(anni, r, mensile, quotaCore, ogniCore, ogniSat){
-  let v=0, cassaC=0, cassaS=0, vers=0, costi=0, ivafe=0;
-  const rm = Math.pow(1 + r - 0.002, 1/12) - 1;  // TER medio ETF 0,2%
-  for (let m=1; m<=anni*12; m++){
-    cassaC += mensile*quotaCore; cassaS += mensile*(1-quotaCore); vers += mensile;
-    if (m % ogniCore === 0 && cassaC > 0){ const c = C.etf_core; costi += c; v += cassaC - c; cassaC = 0; }
-    if (quotaCore < 1 && m % ogniSat === 0 && cassaS > 0){ const c = commBorsa('USA') + cassaS*C.autofx; costi += c; v += cassaS - c; cassaS = 0; }
-    v *= 1 + rm;
-    if (m % 12 === 0){ const t = v*C.ivafe; v -= t; ivafe += t; }
-  }
-  v += cassaC + cassaS;
-  const tasse = Math.max(0, v - vers) * C.tassa;
-  return {vers, lordo:v, netto:v - tasse, costi, ivafe, tasse};
+function disegna(){
+  const st = decidi();
+  disegnaHero(st); radar(st); disegnaCompra(st); disegnaVendi(st); disegnaPort();
 }
-function renderPiano(){
-  const m = Math.max(10, +$('#pi-m').value || 100), core = Math.min(100, Math.max(0, +$('#pi-core').value || 80))/100;
-  const etf = +$('#pi-etf').value || 0;
-  try { localStorage.setItem(PK, JSON.stringify({m, core: core*100, etf: etf||null})); } catch(e) {}
-  const mc = Math.round(m*core*100)/100, ms = Math.round((m - m*core)*100)/100;
-  // frequenza ETF: almeno 1 quota intera per ordine
-  let ogniCore = etf > 0 ? Math.max(1, Math.ceil(etf / Math.max(mc,1))) : (mc >= 150 ? 1 : 2);
-  const ordineCore = mc*ogniCore;
-  const ogniSat = ms > 0 ? Math.min(12, Math.max(3, Math.ceil(120 / ms))) : 0;
-  const budgetSat = ms*ogniSat;
-  const mese = new Date().getMonth()+1;
-  let a = `<div class="item"><div><span class="tk">ETF globale</span> <span class="badge b-buy">▲ ${fmt(mc,0)} €/mese</span></div><div></div>
-    <div class="why">Compra un ETF azionario mondiale ad accumulazione dalla <b>Core Selection su Tradegate</b> (1 € a ordine). Con ${fmt(mc,0)} €/mese conviene comprare <b>ogni ${ogniCore} ${ogniCore===1?'mese':'mesi'}</b> (~${fmt(ordineCore,0)} € a ordine): il costo pesa <b>${pctc(C.etf_core/ordineCore,2)}</b>. ${etf>0 ? `Con la quota a ${fmt(etf,0)} € ne compri ${Math.floor(ordineCore/etf)} per volta; il resto rimane in cassa per il giro dopo.` : 'Inserisci sopra il prezzo di una quota per sapere ogni quanto comprare (DEGIRO non vende frazioni).'}
-    <br>Esempi: Vanguard FTSE All-World Acc (IE00BK5BQT80) · iShares Core MSCI World Acc (IE00B4L5Y983). Controlla su DEGIRO di scegliere la quotazione su <b>Tradegate</b>.</div></div>`;
-  if (ms > 0) a += `<div class="item"><div><span class="tk">Azioni dal Radar</span> <span class="badge b-hold">● ${fmt(ms,0)} €/mese</span></div><div></div>
-    <div class="why">Accumula ${fmt(ms,0)} €/mese e <b>ogni ${ogniSat} mesi</b> (~${fmt(budgetSat,0)} €) compra <b>una sola azione</b> tra i candidati qui sotto, da tenere almeno 6-12 mesi. Sotto i 120 € a ordine le commissioni mangiano troppo. Questo mese: ${(mese % ogniSat === 0) ? '<b>è mese di acquisto</b>.' : `accumula (prossimo acquisto tra ${ogniSat - (mese % ogniSat)} ${ogniSat - (mese % ogniSat)===1?'mese':'mesi'}).`}</div></div>`;
-  $('#pi-azioni').innerHTML = a;
-  // candidati: lista lungo periodo, borse economiche, 1 azione entro il budget
-  const L = D.liste.lungo.acquisti.filter(r => r.pe != null && r.pe <= Math.max(budgetSat, 1) && (r.b==='USA' || r.b==='Milano'));
-  const L2 = D.liste.lungo.acquisti.filter(r => r.pe != null && r.pe <= Math.max(budgetSat,1) && !(r.b==='USA' || r.b==='Milano'));
-  const riga = r => { const n = Math.max(1, Math.floor(budgetSat / r.pe)), imp = n*r.pe, c = costoAR(r.b, r.v, imp);
-    return `<tr><td><b>${esc(r.t)}</b><br><span class="small">${esc(r.n)} · ${esc(r.b)}</span></td><td>${n} × ${fmt(r.pe,0)} €</td><td>${fmt(c,2)} €<br><span class="small">${pctc(c/imp,1)}</span></td><td><span class="pct">${fmt(r.p,0)}</span></td></tr>`; };
-  $('#pi-cand').innerHTML = ms <= 0 ? '<p class="note">Hai messo il 100% in ETF: nessuna azione singola.</p>' :
-    `<p class="note">Dalla lista "medio-lungo" di oggi, solo titoli dove 1 azione costa al massimo ${fmt(budgetSat,0)} €. Prima le borse più economiche su DEGIRO (USA e Milano: 2 € a ordine).</p>
-    <table><thead><tr><th>Titolo</th><th>Quante</th><th>Costi A/R</th><th>Punt.</th></tr></thead><tbody>${(L.concat(L2)).slice(0,8).map(riga).join('') || '<tr><td colspan="4">Nessun candidato nel budget oggi: accumula e riprova il mese prossimo.</td></tr>'}</tbody></table>`;
-  // proiezioni
-  const sc = [[0.03,'Prudente 3%'],[0.06,'Medio 6%'],[0.08,'Buono 8%']];
-  let t = `<table><thead><tr><th>Anni</th><th>Versati</th>${sc.map(s=>`<th>${s[1]}</th>`).join('')}</tr></thead><tbody>`;
-  [5,10,20,30].forEach(y => {
-    const rs = sc.map(s => simula(y, s[0], m, core, ogniCore, ogniSat||6));
-    t += `<tr><td>${y}</td><td>${fmt(rs[0].vers,0)} €</td>${rs.map(r=>`<td><b>${fmt(r.netto,0)} €</b><br><span class="small up">+${fmt(r.netto-r.vers,0)}</span></td>`).join('')}</tr>`;
-  });
-  const d20 = simula(20, 0.06, m, core, ogniCore, ogniSat||6);
-  t += `</tbody></table><p class="note">Valori <b>netti</b>: già tolti commissioni DEGIRO, costo dell'ETF (0,2%/anno), IVAFE 0,2%/anno e il 26% di tasse sul guadagno se vendi tutto alla fine. Esempio 20 anni al 6%: commissioni ${fmt(d20.costi,0)} €, IVAFE ${fmt(d20.ivafe,0)} €, tasse ${fmt(d20.tasse,0)} €. I rendimenti sono ipotesi annue medie del mercato azionario mondiale, non promesse: in alcuni anni si perde anche il 20-40%. Euro nominali, senza inflazione.</p>`;
-  $('#pi-proj').innerHTML = t;
-  // costi
-  $('#pi-costi').innerHTML = `<table><tbody>
-    <tr><td>ETF Core Selection su Tradegate</td><td>${fmt(C.etf_core,2)} € a ordine</td></tr>
-    <tr><td>Azioni USA e Borsa Italiana</td><td>${fmt(commBorsa('USA'),2)} € a ordine</td></tr>
-    <tr><td>Azioni Xetra, Parigi, Amsterdam, Londra, Zurigo, nordici…</td><td>${fmt(commBorsa('Xetra'),2)} € a ordine</td></tr>
-    <tr><td>Cambio automatico (titoli non in euro)</td><td>${pctc(C.autofx,2)} a operazione</td></tr>
-    <tr><td>Connessione borse estere (non Milano/Tradegate)</td><td>${fmt(C.conn,2)} €/anno per borsa</td></tr>
-    <tr><td>Tobin tax azioni italiane / TTF francese</td><td>${pctc(C.ftt.Milano||0,1)} / ${pctc(C.ftt.Parigi||0,1)} sull'acquisto</td></tr>
-    <tr><td>IVAFE (DEGIRO è estero: la versi tu)</td><td>${pctc(C.ivafe,1)} annuo sul valore</td></tr>
-    <tr><td>Tasse sul guadagno</td><td>${pctc(C.tassa,0)}</td></tr></tbody></table>
-    <p class="note">DEGIRO non fa da sostituto d'imposta: ogni anno vanno compilati i quadri RW (e RT/RM se vendi o incassi dividendi). Le perdite su azioni si possono compensare con guadagni su azioni nei 4 anni successivi; i guadagni degli ETF invece no. Tariffe da ricontrollare sul tariffario DEGIRO.</p>`;
-  // scalping
-  const imp = [100, m*12, 1000, 5000];
-  $('#pi-scalp').innerHTML = `<p class="note">Lo scalping (tanti acquisti e vendite nella stessa giornata per guadagnare pochi decimi di %) <b>con questi importi non è sostenibile</b>: ogni giro di compra+vendi costa più di quanto si punta a guadagnare. E ogni guadagno va dichiarato e tassato al 26%.</p>
-    <table><thead><tr><th>Importo</th><th>Costo A/R USA</th><th>Costo A/R Xetra</th></tr></thead><tbody>${imp.map(x=>{const u=costoAR('USA','USD',x), e=costoAR('Xetra','EUR',x);return `<tr><td>${fmt(x,0)} €</td><td>${fmt(u,2)} € (${pctc(u/x,2)})</td><td>${fmt(e,2)} € (${pctc(e/x,2)})</td></tr>`;}).join('')}</tbody></table>
-    <p class="note">Lo swing della scheda Segnali è il modo "attivo" più sensato, ma solo con almeno 1.000-2.000 € per operazione e dopo che la scheda Affidabilità avrà mostrato risultati positivi.</p>`;
+disegna();
+
+const tr = D.track?.lungo || {n:0};
+$('#piede').textContent = `Consigli statistici generati automaticamente ogni sera, non consulenza finanziaria: controlla sempre il titolo su DEGIRO prima di comprare. ` +
+  (tr.n > 0 ? `Verifica sui risultati reali: ${tr.n} giorni controllati. ` : `Il Radar è in fase di verifica: i primi risultati reali arrivano tra qualche settimana. `) +
+  `Commissioni DEGIRO, cambio e Tobin tax sono già nei calcoli; le plusvalenze sono tassate al 26%.`;
+
+// ============ TUTTE LE AZIONI ============
+const borse = [...new Set(A.map(r => r.b))].sort();
+$('#f-borsa').innerHTML += borse.map(b => `<option>${esc(b)}</option>`).join('');
+let filtro = '', mostra = 50;
+document.querySelectorAll('#chips .chip').forEach(c => c.onclick = () => {
+  filtro = c.dataset.f; document.querySelectorAll('#chips .chip').forEach(x => x.classList.toggle('on', x===c)); mostra = 50; disegnaTutte();
+});
+function disegnaTutte(){
+  const q = $('#q').value.trim().toLowerCase(), b = $('#f-borsa').value, o = $('#f-ord').value;
+  const resto = (Math.max(0, BUDGET - spesoMese()) + CASSA) || BUDGET;
+  let R = A.filter(r => (!b || r.b===b) && (!q || r.t.toLowerCase().includes(q) || r.n.toLowerCase().includes(q)));
+  if (filtro==='forti') R = R.filter(r => r.p >= 70);
+  if (filtro==='deboli') R = R.filter(r => r.p < 30);
+  if (filtro==='budget') R = R.filter(r => r.pe > 0 && r.pe <= resto);
+  R.sort(o==='n' ? (x,y) => x.n.localeCompare(y.n) : (x,y) => (y[o] ?? -1e9) - (x[o] ?? -1e9));
+  $('#conta').textContent = `${R.length.toLocaleString('it-IT')} azioni` + (R.length > mostra ? `, mostrate le prime ${mostra}` : '');
+  $('#lista').innerHTML = R.length ? R.slice(0, mostra).map(r => `
+    <div class="riga click" data-t="${esc(r.t)}"><div class="mono">${sig(r.t)}</div>
+    <div class="nome"><b>${esc(r.t)} <span style="display:inline;color:var(--spento);font-weight:500;font-size:12.5px">${esc(r.b)}</span></b><span>${esc(r.n)}</span></div>
+    <div class="num">${px(r.c, r.v)}<span class="${cls(r.r252)}">${pct(r.r252,0)} in 12 mesi</span></div>${punti(r.p)}</div>
+    <div class="dett" data-d="${esc(r.t)}"><div class="kv">
+      <span>Giudizio <b>${giud(r.p)}</b></span><span>Un’azione <b>${eur(r.pe)}</b></span>
+      <span>1 mese <b class="${cls(r.r21)}">${pct(r.r21)}</b></span><span>12 mesi <b class="${cls(r.r252)}">${pct(r.r252)}</b></span>
+      <span>Tendenza <b>${r.trend ? 'positiva' : 'non positiva'}</b></span>
+      <span>Commissioni per ordine <b>${eur(comm(r.b) + (r.v!=='EUR' ? r.pe*C.autofx : 0))}</b></span></div>
+      ${r.mot ? `<p style="margin:8px 0 0">${esc(r.mot)}</p>` : ''}</div>`).join('')
+    : '<div class="vuoto">Nessuna azione trovata con questi filtri.</div>';
+  $('#altre').style.display = R.length > mostra ? 'block' : 'none';
+  $('#lista').querySelectorAll('.riga.click').forEach(row => row.onclick = () =>
+    $('#lista').querySelector(`.dett[data-d="${CSS.escape(row.dataset.t)}"]`).classList.toggle('on'));
 }
-['#pi-m','#pi-core','#pi-etf'].forEach(id => $(id).oninput = renderPiano);
-renderPiano();
+$('#q').oninput = () => { mostra = 50; disegnaTutte(); };
+$('#f-borsa').onchange = $('#f-ord').onchange = () => { mostra = 50; disegnaTutte(); };
+$('#altre').onclick = () => { mostra += 100; disegnaTutte(); };
+disegnaTutte();
 </script>
 </body>
 </html>
