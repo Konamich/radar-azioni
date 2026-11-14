@@ -1,42 +1,42 @@
 {
-  "data": "2026-11-12",
-  "generato": "2026-11-13T02:56",
-  "titoli": 3978,
-  "durata_sec": 460,
+  "data": "2026-11-13",
+  "generato": "2026-11-14T02:42",
+  "titoli": 3977,
+  "durata_sec": 320,
   "statistiche": {
     "swing": {
       "orizzonte": "swing",
       "giorni": 15,
-      "val_ic_ml": 0.010242265859267047,
-      "val_ic_regole": -0.0026242723183817454,
-      "val_ic_ml_positivo": 0.5421686746987951,
-      "val_extra_top10": -0.00042820314411073923,
+      "val_ic_ml": 0.010868400737516729,
+      "val_ic_regole": -0.003897534696891318,
+      "val_ic_ml_positivo": 0.5301204819277109,
+      "val_extra_top10": -0.0014620814472436905,
       "val_giorni": 83,
       "righe_addestramento": 900000,
       "feature_principali": [
         {
           "nome": "ampiezza mercato",
-          "valore": 0.1428
+          "valore": 0.1311
         },
         {
           "nome": "volatilit\u00e0 mercato",
-          "valore": 0.0956
+          "valore": 0.1086
         },
         {
           "nome": "trend mercato 1 mese",
-          "valore": 0.0697
+          "valore": 0.0747
         },
         {
           "nome": "ATR %",
-          "valore": 0.0388
+          "valore": 0.0441
         },
         {
           "nome": "distanza dal minimo annuo",
-          "valore": 0.0161
+          "valore": 0.016
         },
         {
           "nome": "ATR %",
-          "valore": 0.0159
+          "valore": 0.0145
         }
       ],
       "peso_ml": 0.9
@@ -44,39 +44,39 @@
     "lungo": {
       "orizzonte": "lungo",
       "giorni": 126,
-      "val_ic_ml": 0.03998172345334293,
-      "val_ic_regole": 0.019208088987945165,
-      "val_ic_ml_positivo": 0.7469879518072289,
-      "val_extra_top10": -0.0188788790255785,
+      "val_ic_ml": 0.04080563135230698,
+      "val_ic_regole": 0.01679261568558274,
+      "val_ic_ml_positivo": 0.7228915662650602,
+      "val_extra_top10": -0.019474951550364494,
       "val_giorni": 83,
       "righe_addestramento": 900000,
       "feature_principali": [
         {
           "nome": "ATR %",
-          "valore": 0.0721
+          "valore": 0.0736
         },
         {
           "nome": "distanza dal minimo annuo",
-          "valore": 0.0668
+          "valore": 0.0591
         },
         {
           "nome": "ampiezza mercato",
-          "valore": 0.0522
-        },
-        {
-          "nome": "volatilit\u00e0 mercato",
-          "valore": 0.0344
+          "valore": 0.0481
         },
         {
           "nome": "volatilit\u00e0 3 mesi",
-          "valore": 0.0305
+          "valore": 0.0396
         },
         {
-          "nome": "MM50 vs MM200",
-          "valore": 0.0298
+          "nome": "volatilit\u00e0 mercato",
+          "valore": 0.0368
+        },
+        {
+          "nome": "distanza dal massimo annuo",
+          "valore": 0.0287
         }
       ],
-      "peso_ml": 0.675
+      "peso_ml": 0.708
     }
   }
 }
